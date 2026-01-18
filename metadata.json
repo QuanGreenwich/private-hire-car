@@ -1,0 +1,7 @@
+{
+  "name": "Copy of PrivateHire Luxury Travel",
+  "description": "A premium chauffeur and taxi booking application featuring luxury vehicle selection, real-time tracking, and travel management.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
