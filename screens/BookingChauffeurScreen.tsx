@@ -9,11 +9,10 @@ interface Props {
 
 const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate }) => {
   const [duration, setDuration] = useState('8h');
+  const [rentalType, setRentalType] = useState<'hourly' | 'daily'>('hourly');
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-bg-light pb-32">
-        <div className="h-12 w-full flex items-end justify-between px-6 pb-2 text-sm font-medium text-white z-50 absolute top-0 left-0 bg-gradient-to-b from-black/60 to-transparent pointer-events-none"></div>
-        
+    <div className="relative flex flex-col min-h-screen bg-bg-light pb-24">
         {/* Header Section */}
         <div className="relative w-full h-[32vh] rounded-b-[2.5rem] overflow-hidden shadow-xl z-0 bg-slate-900">
              <MapBackground className="w-full h-full" dark={true}>
@@ -42,14 +41,25 @@ const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate }) => {
              </MapBackground>
         </div>
 
-        <div className="px-6 -mt-4 relative z-10 w-full max-w-md mx-auto space-y-8">
+
+        <div className="px-6 -mt-4 relative z-10 w-full max-w-md mx-auto space-y-6">
             {/* Duration Section */}
             <section>
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-slate-900 font-display">Rental Duration</h3>
                     <div className="flex bg-slate-200 rounded-lg p-0.5">
-                        <button className="px-3 py-1 rounded-md bg-white text-xs font-bold shadow-sm text-slate-900">Hourly</button>
-                        <button className="px-3 py-1 rounded-md text-xs font-medium text-slate-500 hover:text-slate-700">Daily</button>
+                        <button 
+                            onClick={() => setRentalType('hourly')}
+                            className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${rentalType === 'hourly' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            Hourly
+                        </button>
+                        <button 
+                            onClick={() => setRentalType('daily')}
+                            className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${rentalType === 'daily' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            Daily
+                        </button>
                     </div>
                 </div>
                 <div className="flex gap-3 overflow-x-auto hide-scrollbar py-2">
@@ -172,21 +182,19 @@ const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate }) => {
                     </div>
                 </div>
             </section>
-        </div>
 
-        {/* Footer */}
-        <div className="fixed bottom-0 left-0 w-full z-50">
-             <div className="bg-white/95 backdrop-blur-xl border-t border-slate-200 pb-safe pt-4 px-6">
+            {/* Footer Button */}
+            <section className="mt-6 mb-2">
                 <button 
                     onClick={() => onNavigate(Screen.ACTIVITY)}
-                    className="w-full bg-midnight hover:bg-black text-white h-14 rounded-xl font-bold text-lg shadow-lg flex items-center justify-between px-6 transition-transform active:scale-[0.98] mb-4"
+                    className="w-full bg-midnight hover:bg-black text-white h-14 rounded-xl font-bold text-lg shadow-lg flex items-center justify-between px-6 transition-transform active:scale-[0.98]"
                 >
                     <span>Confirm Booking</span>
                     <span className="flex items-center gap-2 text-base font-semibold bg-white/20 px-3 py-1 rounded-lg">
                         £408.00 <ChevronRight size={16} />
                     </span>
                 </button>
-             </div>
+            </section>
         </div>
     </div>
   );

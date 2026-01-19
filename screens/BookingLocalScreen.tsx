@@ -12,7 +12,7 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
   const [selectedVehicle, setSelectedVehicle] = useState<string>(VEHICLES[0].id);
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-bg-light">
+    <div className="relative flex flex-col min-h-screen bg-bg-light pb-40">
       {/* Map Header */}
       <div className="relative w-full h-[45vh] bg-slate-200 overflow-hidden shadow-sm z-0">
         <MapBackground className="w-full h-full opacity-90">
@@ -39,7 +39,7 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
       </div>
 
       {/* Floating Panel */}
-      <div className="relative -mt-20 z-10 w-full max-w-md mx-auto flex flex-col gap-6 px-6 pb-32">
+      <div className="relative -mt-20 z-10 w-full max-w-md mx-auto flex flex-col gap-6 px-6">
         {/* Input Card */}
         <div className="bg-white rounded-2xl shadow-float p-5 relative">
              <div className="absolute left-[29px] top-[48px] bottom-[48px] w-0.5 bg-slate-200 z-0"></div>
@@ -123,10 +123,9 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
       </div>
 
       {/* Bottom Action */}
-      <div className="fixed bottom-0 left-0 w-full z-50">
-        <div className="bg-white/95 backdrop-blur-xl border-t border-slate-200 pb-safe pt-4 px-6 rounded-t-3xl shadow-[0_-5px_30px_rgba(0,0,0,0.05)]">
+      <div className="fixed bottom-20 left-0 w-full z-40 px-6">
             <div className="max-w-md mx-auto flex flex-col gap-4">
-                <div className="flex items-center justify-between px-2">
+                <div className="flex items-center justify-between px-2 bg-white rounded-xl p-3 shadow-md">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-5 bg-slate-800 rounded flex items-center justify-center">
                             <span className="text-[8px] font-bold text-white tracking-widest">VISA</span>
@@ -137,14 +136,13 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
                 </div>
                 <button 
                     onClick={() => onNavigate(Screen.ACTIVITY)}
-                    className="w-full h-14 bg-midnight text-white rounded-xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group mb-4"
+                    className="w-full h-14 bg-midnight text-white rounded-xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
                 >
                     <span className="text-lg font-bold font-display">Book Standard</span>
                     <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-mono font-medium">£12.75</span>
                     <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
-        </div>
       </div>
     </div>
   );

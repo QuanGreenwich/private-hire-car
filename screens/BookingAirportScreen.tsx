@@ -8,7 +8,7 @@ interface Props {
 
 const BookingAirportScreen: React.FC<Props> = ({ onNavigate }) => {
   return (
-    <div className="relative min-h-screen w-full flex flex-col max-w-md mx-auto bg-bg-light pb-32">
+    <div className="relative min-h-screen w-full flex flex-col max-w-md mx-auto bg-bg-light pb-40">
         <div className="relative bg-gradient-to-b from-primary to-primary-dark pt-14 pb-12 px-6 rounded-b-[2.5rem] shadow-lg z-10">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
             <div className="relative flex items-center justify-between mb-6">
@@ -117,14 +117,16 @@ const BookingAirportScreen: React.FC<Props> = ({ onNavigate }) => {
              </div>
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 p-6 pb-safe bg-white border-t border-slate-100 z-50 max-w-md mx-auto">
-            <button 
-                onClick={() => onNavigate(Screen.ACTIVITY)}
-                className="w-full bg-primary hover:bg-primary-dark active:scale-[0.98] transition-all text-white font-display font-bold text-lg h-14 rounded-xl shadow-lg flex items-center justify-center gap-2"
-            >
-                <span>Book Transfer</span>
-                <ArrowRight size={20} />
-            </button>
+        <div className="fixed bottom-20 left-0 w-full px-6 z-40">
+            <div className="w-full max-w-md mx-auto">
+                <button 
+                    onClick={() => onNavigate(Screen.ACTIVITY)}
+                    className="w-full bg-primary hover:bg-primary-dark active:scale-[0.98] transition-all text-white font-display font-bold text-lg h-14 rounded-xl shadow-lg flex items-center justify-center gap-2"
+                >
+                    <span>Book Transfer</span>
+                    <ArrowRight size={20} />
+                </button>
+            </div>
         </div>
     </div>
   );
