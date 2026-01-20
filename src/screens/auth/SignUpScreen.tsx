@@ -27,13 +27,13 @@ const SignUpScreen: React.FC<Props> = ({ onNavigate }) => {
             >
                 <ArrowLeft size={20} />
             </button>
-            <h1 className="font-display italic font-bold text-primary text-2xl">PrivateHire</h1>
+            <h1 className="italic font-bold text-primary text-2xl">PrivateHire</h1>
             <div className="w-10"></div>
         </div>
 
         <div className="flex-1 flex flex-col justify-center space-y-6">
             <div className="text-center mb-2">
-                <h2 className="text-3xl font-display font-bold text-gray-900">Create Account</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
                 <p className="text-gray-500 font-medium mt-1">Begin your premium journey.</p>
             </div>
 
@@ -43,7 +43,7 @@ const SignUpScreen: React.FC<Props> = ({ onNavigate }) => {
                         <CheckCircle2 size={18} />
                     </div>
                     <div>
-                        <h3 className="font-display font-bold text-amber-900 text-sm">Exclusive Offer</h3>
+                        <h3 className="font-bold text-amber-900 text-base">Exclusive Offer</h3>
                         <p className="text-xs text-amber-800/80 mt-0.5 font-medium leading-relaxed">
                             Sign up now to receive a <span className="font-bold">15% discount</span> on your first luxury ride.
                         </p>
@@ -81,7 +81,7 @@ const SignUpScreen: React.FC<Props> = ({ onNavigate }) => {
             <div className="space-y-4 pt-2">
                 <button 
                     onClick={() => onNavigate(Screen.HOME)}
-                    className="w-full bg-primary hover:bg-primary-dark text-white font-display font-semibold py-4 rounded-xl shadow-lg transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
+                    className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl shadow-lg transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
                 >
                     <span>Sign Up</span>
                     <ArrowRight size={20} />

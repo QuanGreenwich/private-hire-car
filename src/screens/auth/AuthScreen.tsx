@@ -24,14 +24,14 @@ const AuthScreen: React.FC<Props> = ({ onNavigate }) => {
              <div className="mx-auto w-12 h-12 mb-6 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-sm bg-white/10">
                 <Diamond className="text-white w-6 h-6" />
              </div>
-             <h1 className="text-5xl font-display italic font-bold text-white mb-2">PrivateHire</h1>
+             <h1 className="text-5xl italic font-bold text-white mb-2">PrivateHire</h1>
              <p className="text-slate-200 text-lg font-light">Your journey begins here.</p>
         </div>
 
         <div className="w-full">
             <div className="mb-8 space-y-1">
-                <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
-                <p className="text-slate-300 text-sm">Sign in to continue your premium experience</p>
+                <h2 className="text-2xl font-bold text-white">Welcome Back</h2>
+                <p className="text-slate-300 text-base">Sign in to continue your premium experience</p>
             </div>
 
             <form className="space-y-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
 import { Icon } from 'leaflet';
-import driversData from '../data/drivers.json';
+import driversData from '@/data/drivers.json';
 
 // Custom marker icons using CDN
 const DriverIcon = new Icon({
@@ -110,7 +110,7 @@ const Map: React.FC<MapProps> = ({
                 <Marker position={driverLocation} icon={DriverIcon}>
                   <Popup>
                     <div className="p-2">
-                      <h3 className="font-bold text-sm">James Sterling</h3>
+                      <h3 className="font-bold text-sm">Nguyễn Quân</h3>
                       <p className="text-xs text-gray-600">Mercedes E-Class</p>
                       <p className="text-xs text-green-600 font-semibold">Arriving in 5 mins</p>
                     </div>

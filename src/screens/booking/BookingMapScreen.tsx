@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Screen } from '@/types';
-import { Map, MapMarker, MarkerContent, MapControls, MapRoute } from '@/components/MapComponents';
-import locationsData from '../data/locations.json';
+import { Map, MapMarker, MarkerContent, MapControls, MapRoute } from '@/components';
+import locationsData from '@/data/locations.json';
 import { ArrowLeft, Search, MapPin, Navigation, X } from 'lucide-react';
 
 interface Props {
@@ -130,7 +130,7 @@ const BookingMapScreen: React.FC<Props> = ({ onNavigate }) => {
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-bold text-gray-500 uppercase">Pickup</p>
-                <p className="text-sm font-bold text-black">
+                <p className="text-base font-bold text-black">
                   {pickup ? pickup.name : 'Select pickup location'}
                 </p>
                 {pickup && <p className="text-xs text-gray-500">{pickup.address}</p>}
@@ -151,7 +151,7 @@ const BookingMapScreen: React.FC<Props> = ({ onNavigate }) => {
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-bold text-gray-500 uppercase">Destination</p>
-                <p className="text-sm font-bold text-black">
+                <p className="text-base font-bold text-black">
                   {destination ? destination.name : 'Where to?'}
                 </p>
                 {destination && <p className="text-xs text-gray-500">{destination.address}</p>}
@@ -200,7 +200,7 @@ const BookingMapScreen: React.FC<Props> = ({ onNavigate }) => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search locations..."
-                  className="w-full pl-12 pr-12 py-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-indigo-700 text-sm"
+                  className="w-full pl-12 pr-12 py-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-indigo-700 text-base"
                   autoFocus
                 />
                 {searchQuery && (
@@ -240,7 +240,7 @@ const BookingMapScreen: React.FC<Props> = ({ onNavigate }) => {
                             <MapPin size={20} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-black truncate">{location.name}</p>
+                            <p className="text-base font-bold text-black truncate">{location.name}</p>
                             <p className="text-xs text-gray-500">{location.address}</p>
                             {location.popular && (
                               <span className="inline-block mt-1 text-xs font-bold text-indigo-700">Popular</span>

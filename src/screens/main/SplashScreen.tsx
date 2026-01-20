@@ -18,15 +18,15 @@ const SplashScreen: React.FC<Props> = ({ onNavigate }) => {
       </div>
 
       <div className="relative z-10 pt-20 flex justify-center">
-        <h1 className="font-display italic text-6xl tracking-tighter drop-shadow-xl text-center">PrivateHire</h1>
+        <h1 className="italic text-6xl tracking-tighter drop-shadow-xl text-center">PrivateHire</h1>
       </div>
 
       <div className="relative z-10 pb-10 space-y-6">
         <div className="space-y-2">
             <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400">Plan your journey</p>
-            <h2 className="text-5xl font-display font-bold leading-tight">
-                Luxury Travel<br />
-                <span className="font-light text-gray-300">at Your Fingertips</span>
+            <h2 className="text-5xl font-bold leading-tight">
+                Premium Travel <br />
+                <span className="text-gray-300">at Your Fingertips</span>
             </h2>
         </div>
         

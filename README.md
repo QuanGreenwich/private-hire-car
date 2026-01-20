@@ -1,52 +1,132 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Private Hire Car - Ứng dụng đặt xe 🚗
 
-# Private Hire Car - Luxury Travel App 🚗
+Ứng dụng đặt xe cao cấp với 3 loại dịch vụ: Local Journey, Airport Transfer, và Hotel Pickup.
 
-Ứng dụng đặt xe sang cao cấp với giao diện hiện đại, hỗ trợ đặt xe sân bay, chauffeur hire và xe địa phương.
+## Cách chạy app
 
-## 🛠️ Công nghệ sử dụng
-
-| Hạng mục         | Công nghệ         | Lý do chọn                                                  |
-| ---------------- | ----------------- | ----------------------------------------------------------- |
-| **Nền tảng**     | Web App (Chrome)  | Mobile View trên trình duyệt, nhẹ hơn Android Studio 10 lần |
-| **IDE**          | VS Code           | Miễn phí, nhẹ, hỗ trợ IntelliSense tốt                      |
-| **Ngôn ngữ**     | TypeScript (ES6+) | Type-safe, dễ debug, tài liệu phong phú                     |
-| **Framework**    | React.js + Vite   | Chuẩn công nghiệp, dễ chia component cho team               |
-| **Bản đồ**       | React Leaflet     | 100% miễn phí (OpenStreetMap), không cần API key            |
-| **UI Framework** | Tailwind CSS      | Code UI nhanh, không cần viết CSS thuần                     |
-| **Dữ liệu**      | Mock JSON         | Không cần Backend/Database trong giai đoạn phát triển       |
-
-## Yêu cầu hệ thống
-
-- **Node.js** phiên bản 18.x trở lên
-- **npm** hoặc **yarn** package manager
-
-## Cài đặt và chạy dự án
-
-### Bước 1: Clone hoặc tải dự án về máy
-
-```bash
-git clone <repository-url>
-cd private-hire-car
-```
-
-### Bước 2: Cài đặt dependencies
+### 1. Cài đặt
 
 ```bash
 npm install
 ```
 
-Lệnh này sẽ tự động cài đặt tất cả các packages cần thiết từ `package.json`:
+### 2. Chạy development server
 
-**Dependencies chính:**
+```bash
+npm run dev
+```
 
-- `react` ^19.2.3 - Framework UI
-- `react-dom` ^19.2.3 - React DOM rendering
-- `react-leaflet` - React components cho Leaflet maps
-- `leaflet` - Thư viện bản đồ OpenStreetMap
-- `lucide-react` ^0.562.0 - Icon library
+App sẽ chạy tại: **http://localhost:3000**
+
+### 3. Build production (nếu cần)
+
+```bash
+npm run build
+npm run preview
+```
+
+## Workflow hoạt động
+
+### 📍 **Local Journey** (Đặt xe trong thành phố)
+
+1. Chọn điểm đón từ 25 địa điểm ở London
+2. Chọn điểm đến (khác với điểm đón)
+3. Chọn loại xe: Standard / Executive / Luxury
+4. Xem route trên map với khoảng cách và giá thực tế
+5. Bấm "Book" → Chuyển sang Activity screen
+
+### ✈️ **Airport Transfer** (Đặt xe đón sân bay)
+
+1. Chọn sân bay: Heathrow / Gatwick / Stansted
+2. Nhập thông tin chuyến bay (flight number, terminal)
+3. Chọn loại xe
+4. Tùy chọn Meet & Greet (+£15)
+5. Giá cố định theo loại xe: £45-85
+6. Bấm "Book Transfer" → Activity screen
+
+### 🏨 **Hotel Pickup** (Đón tại khách sạn)
+
+1. Chọn hotel pickup từ 10 khách sạn nổi tiếng London
+2. Chọn điểm đến (có thể là hotel khác)
+3. Chọn loại xe
+4. Xem route và giá động
+5. Bấm "Book" → Activity screen
+
+### 🚕 **Activity Screen** (Theo dõi chuyến đi)
+
+- Hiển thị thông tin tài xế: Tên, xe, màu (random mỗi lần đặt)
+- Xem route trên map từ pickup → destination
+- Chat với tài xế
+- Gọi điện thoại cho tài xế
+- **Cancel Trip**: Hủy chuyến với phí £5
+
+## Tính năng chính
+
+✅ **Real routing**: Dùng OSRM API tính route thực tế trên đường  
+✅ **Dynamic pricing**: Giá thay đổi theo khoảng cách và loại xe  
+✅ **25 địa điểm London**: Bao gồm ga tàu, bảo tàng, landmark  
+✅ **10 khách sạn 5 sao**: The Ritz, The Savoy, Claridge's...  
+✅ **3 loại xe**: Standard SUV, Executive Sedan, Luxury MPV  
+✅ **Fleet thực tế**: 5 model mỗi loại (Mercedes, BMW, Audi, Jaguar, Lexus...)  
+✅ **Random vehicle**: Mỗi lần đặt được assign xe và màu ngẫu nhiên  
+✅ **Interactive map**: MapLibre GL với real route display  
+✅ **Cancel booking**: Hủy chuyến và reset state
+
+## Giá xe
+
+| Loại xe               | Base Fare | Per Mile | Multiplier |
+| --------------------- | --------- | -------- | ---------- |
+| **Standard** (SUV)    | £3.50     | £2.50    | x1.0       |
+| **Executive** (Sedan) | £3.50     | £3.50    | x1.4       |
+| **Luxury** (MPV)      | £3.50     | £4.50    | x1.8       |
+
+**Airport Transfer**: Giá cố định £45/£65/£85 + £15 Meet & Greet
+
+## Tech Stack
+
+- React 19.2.3 + TypeScript
+- Vite 6.2.0
+- MapLibre GL 4.7.1
+- Tailwind CSS v4
+- OSRM Routing API
+- Lucide React Icons
+
+## Cấu trúc project
+
+```
+src/
+├── screens/
+│   ├── booking/           # Booking screens
+│   │   ├── BookingLocalScreen.tsx
+│   │   ├── BookingAirportScreen.tsx
+│   │   └── BookingHotelScreen.tsx
+│   └── main/              # Main screens
+│       ├── ActivityScreen.tsx
+│       ├── HomeScreen.tsx
+│       └── ...
+├── components/            # Reusable components
+│   ├── Map.tsx
+│   ├── MapRoute.tsx
+│   └── BottomNav.tsx
+├── utils/
+│   └── routing.ts         # OSRM API integration
+├── constants/
+│   ├── index.ts           # App constants
+│   └── types.ts           # TypeScript types
+└── App.tsx                # Main app with routing
+```
+
+## Lưu ý
+
+- App chạy trong browser, responsive cho mobile view
+- Không cần backend hay database
+- Route calculation cần internet (dùng OSRM API)
+- Data được lưu trong App state, reload sẽ mất
+
+---
+
+**Phát triển bởi**: COMP 1807 Team  
+**Môn học**: Agile Development with SCRUM
 
 **Dev Dependencies:**
 

@@ -8,18 +8,18 @@ interface Props {
 
 const ExploreScreen: React.FC<Props> = ({ onNavigate }) => {
   return (
-    <div className="relative min-h-screen bg-gray-50 flex flex-col pb-24">
-       <header className="flex-none px-6 pt-12 pb-4 bg-white/95 backdrop-blur-md z-20 sticky top-0 shadow-sm">
+    <div className="relative h-screen bg-gray-50 flex flex-col pb-24">
+       <header className="flex-none px-6 pt-12 pb-4 bg-white/95 backdrop-blur-md z-20 shadow-sm">
          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight text-black">Explore & Offers</h1>
-            <div className="w-12 h-12 rounded-full bg-orange-200 overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1974" alt="Profile" className="w-full h-full object-cover" />
+            <h1 className="text-2xl font-bold tracking-tight text-black">Explore & Offers</h1>
+            <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center shadow-sm">
+                <span className="text-slate-500 text-lg font-bold">U</span>
             </div>
          </div>
        </header>
 
-       {/* Tabs - Sticky ngay dưới header */}
-       <div className="px-6 py-3 sticky top-[84px] z-10 bg-white border-b border-gray-100">
+       {/* Tabs - Fixed dưới header */}
+       <div className="flex-none px-6 py-3 bg-white border-b border-gray-100 z-10">
            <div className="flex h-14 w-full items-center justify-center rounded-2xl bg-gray-100 p-1">
                <label className="group relative flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-xl px-4 text-base font-semibold transition-all">
                    <input type="radio" name="offer-type" defaultChecked className="peer invisible w-0 absolute" />
@@ -47,8 +47,8 @@ const ExploreScreen: React.FC<Props> = ({ onNavigate }) => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
                     </div>
                     <div className="flex flex-col p-5 bg-gray-50">
-                        <h3 className="text-xl font-bold leading-tight text-black mb-2">Airport Transfer Special</h3>
-                        <p className="text-gray-600 text-sm leading-relaxed mb-4">Get 15% off your next airport transfer when booking via the app. Valid for Heathrow & Gatwick.</p>
+                        <h3 className="text-lg font-bold leading-tight text-black mb-2">Airport Transfer Special</h3>
+                        <p className="text-gray-600 text-base leading-relaxed mb-4">Get 15% off your next airport transfer when booking via the app. Valid for Heathrow & Gatwick.</p>
                         <div className="flex items-center justify-between mt-auto">
                             <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Expires in 3 days</div>
                             <button className="flex h-11 items-center justify-center rounded-xl bg-indigo-700 px-6 text-sm font-semibold text-white shadow-lg shadow-indigo-700/30 transition-all hover:bg-indigo-800 active:scale-95">
@@ -70,7 +70,7 @@ const ExploreScreen: React.FC<Props> = ({ onNavigate }) => {
                                 <span className="text-xs font-bold text-indigo-700 uppercase tracking-wider">Referral Program</span>
                             </div>
                             <h3 className="text-lg font-bold text-black mb-1">Ride Together</h3>
-                            <p className="text-gray-600 text-sm leading-relaxed mb-4">Give £10, Get £10. Refer a friend to PrivateHire and earn credits.</p>
+                            <p className="text-gray-600 text-base leading-relaxed mb-4">Give £10, Get £10. Refer a friend to PrivateHire and earn credits.</p>
                             <button className="self-start flex h-10 items-center justify-center rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-5 text-sm font-semibold transition-colors">
                                 Invite Friends
                             </button>
@@ -83,8 +83,8 @@ const ExploreScreen: React.FC<Props> = ({ onNavigate }) => {
                     <div className="h-40 w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=2000')" }}>
                         <div className="absolute inset-0 bg-gradient-to-r from-midnight/80 to-transparent"></div>
                         <div className="absolute bottom-0 left-0 p-5 w-3/4">
-                            <h3 className="text-2xl font-bold text-white mb-1">London Nights</h3>
-                            <p className="text-gray-200 text-sm font-medium opacity-90">Flat rates to the West End every Friday & Saturday.</p>
+                            <h3 className="text-lg font-bold text-white mb-1">London Nights</h3>
+                            <p className="text-gray-200 text-base font-medium opacity-90">Flat rates to the West End every Friday & Saturday.</p>
                         </div>
                     </div>
                     <div className="p-5 flex items-center justify-between border-t border-gray-100 bg-white">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Screen } from '@/types';
-import MapBackground from '@/components/MapBackground';
+import { MapBackground } from '@/components';
 import { Menu, Locate, Search, Mic, Car, Plane, Hotel, Briefcase, ArrowRight, History } from 'lucide-react';
 
 interface Props {
@@ -41,7 +41,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
             <input 
                 type="text" 
                 placeholder="Where to?" 
-                className="w-full h-full bg-transparent border-none focus:ring-0 text-slate-900 placeholder:text-slate-400 text-lg font-medium"
+                className="w-full h-full bg-transparent border-none focus:ring-0 text-slate-900 placeholder:text-slate-400 text-base font-medium"
             />
             <div className="pr-5 border-l border-slate-100 pl-3 h-8 flex items-center text-slate-400">
                 <Mic size={20} />
@@ -62,7 +62,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
                     <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-300 group-hover:scale-105 group-active:scale-95 group-hover:shadow-primary/40">
                         <item.icon className="text-white" size={28} strokeWidth={1.5} />
                     </div>
-                    <span className="text-sm font-semibold text-slate-800 font-display">{item.label}</span>
+                    <span className="text-sm font-semibold text-slate-800">{item.label}</span>
                 </button>
             ))}
         </div>
@@ -75,8 +75,8 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
             <div className="relative p-5 flex flex-row items-center justify-between gap-4">
                 <div className="flex-1">
                     <span className="inline-block px-2 py-0.5 rounded-md bg-white/20 text-white text-[10px] font-bold tracking-wider mb-2 uppercase">Limited Time</span>
-                    <h3 className="text-xl font-bold text-white leading-tight font-display mb-1">Exclusive Offer</h3>
-                    <p className="text-blue-100 text-sm opacity-90 leading-snug">Get <span className="font-bold text-white">15% off</span> your first airport transfer.</p>
+                    <h3 className="text-lg font-bold text-white leading-tight mb-1">Exclusive Offer</h3>
+                    <p className="text-blue-100 text-base opacity-90 leading-snug">Get <span className="font-bold text-white">15% off</span> your first airport transfer.</p>
                 </div>
                 <div className="shrink-0 h-10 px-4 bg-white text-primary rounded-lg text-sm font-bold shadow-sm flex items-center gap-1 group-hover:bg-gray-50 transition-colors">
                     Claim
@@ -89,7 +89,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
       {/* Recent */}
       <div className="px-6 mt-6 w-full max-w-md mx-auto">
          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-bold text-slate-900">Recent</h3>
+            <h3 className="text-lg font-bold text-slate-900">Recent</h3>
             <button className="text-primary text-sm font-semibold">See all</button>
          </div>
          <div className="flex items-center gap-4 p-3 bg-white rounded-xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer">

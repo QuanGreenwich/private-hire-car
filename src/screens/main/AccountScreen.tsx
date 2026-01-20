@@ -8,28 +8,29 @@ interface Props {
 
 const AccountScreen: React.FC<Props> = ({ onNavigate }) => {
   return (
-    <div className="relative min-h-screen bg-bg-light pb-24 flex flex-col">
-        <div className="absolute top-0 left-0 w-full h-[320px] bg-gradient-to-b from-gray-200/50 to-transparent z-0 pointer-events-none"></div>
-        
-        <header className="sticky top-0 z-30 flex items-center justify-between px-6 pt-12 pb-4 bg-bg-light/80 backdrop-blur-md">
-            <h1 className="text-xl font-bold tracking-tight text-midnight">Account</h1>
+    <div className="relative h-screen bg-bg-light flex flex-col">
+        <header className="flex-none z-30 flex items-center justify-between px-6 pt-12 pb-4 bg-bg-light/80 backdrop-blur-md">
+            <h1 className="text-2xl font-bold tracking-tight text-midnight">Account</h1>
             <button className="p-2 rounded-full hover:bg-gray-100 transition-colors text-slate-500">
                 <Settings size={24} />
             </button>
         </header>
 
+        <div className="flex-1 overflow-y-auto pb-24">
+        <div className="absolute top-0 left-0 w-full h-[320px] bg-gradient-to-b from-gray-200/50 to-transparent z-0 pointer-events-none"></div>
+        
         <section className="px-6 pt-2 pb-6 relative z-10 flex flex-col items-center">
             <div className="relative group mb-4">
                 <div className="absolute -inset-[3px] rounded-full border border-gold/40 animate-pulse"></div>
-                <div className="relative h-28 w-28 rounded-full border-4 border-white overflow-hidden shadow-lg">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1974" alt="Profile" className="w-full h-full object-cover" />
+                <div className="relative h-28 w-28 rounded-full border-4 border-white shadow-lg bg-slate-200 flex items-center justify-center">
+                    <span className="text-slate-400 text-4xl font-bold">U</span>
                 </div>
                 <div className="absolute bottom-1 right-1 bg-primary text-white rounded-full p-2 shadow-md border-2 border-white cursor-pointer hover:bg-primary-dark transition-colors">
                     <Edit2 size={14} />
                 </div>
             </div>
             <div className="flex flex-col items-center gap-2">
-                <h2 className="text-2xl font-bold text-midnight font-display">James Sterling</h2>
+                <h2 className="text-xl font-bold text-midnight">User Name</h2>
                 <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-sm border border-gray-100 ring-1 ring-gold/10">
                     <Verified size={16} className="text-gold fill-gold/20" />
                     <span className="text-primary text-sm font-semibold tracking-wide">Gold Member</span>
@@ -55,8 +56,8 @@ const AccountScreen: React.FC<Props> = ({ onNavigate }) => {
                                     <item.icon size={22} />
                                 </div>
                                 <div className="flex flex-col items-start">
-                                    <span className="text-[15px] font-semibold text-midnight">{item.label}</span>
-                                    {item.sub && <span className="text-[11px] text-slate-500">{item.sub}</span>}
+                                    <span className="text-base font-semibold text-midnight">{item.label}</span>
+                                    {item.sub && <span className="text-xs text-slate-500">{item.sub}</span>}
                                 </div>
                             </div>
                             <ChevronRight className="text-gray-300 group-hover:text-primary transition-colors pr-2" size={24} />
@@ -81,6 +82,7 @@ const AccountScreen: React.FC<Props> = ({ onNavigate }) => {
              </div>
              <p className="text-center text-[10px] text-gray-400 font-medium tracking-wide pb-4">VERSION 4.2.0 • LONDON</p>
         </main>
+        </div>
     </div>
   );
 };

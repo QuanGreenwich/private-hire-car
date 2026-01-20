@@ -9,15 +9,15 @@ interface Props {
 
 const NotificationsScreen: React.FC<Props> = ({ onNavigate }) => {
   return (
-    <div className="relative min-h-screen bg-bg-light flex flex-col">
-        <header className="flex-none px-6 pt-12 pb-4 bg-white/90 backdrop-blur-md sticky top-0 z-20 border-b border-gray-100">
+    <div className="relative h-screen bg-bg-light flex flex-col">
+        <header className="flex-none px-6 pt-12 pb-4 bg-white/90 backdrop-blur-md z-20 border-b border-gray-100">
             <div className="flex justify-between items-end">
-                <h1 className="text-3xl font-display font-bold text-midnight">Notifications</h1>
+                <h1 className="text-2xl font-bold text-midnight">Notifications</h1>
                 <button className="text-sm font-semibold text-primary pb-1">Mark all read</button>
             </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto hide-scrollbar px-4 pb-28 pt-4">
+        <main className="flex-1 overflow-y-auto px-4 pb-28 pt-4">
             <div className="mb-6">
                 <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 ml-2">Today</h2>
                 {NOTIFICATIONS.filter(n => n.time === 'Now' || n.time.includes('h ago')).map(item => (
@@ -39,7 +39,7 @@ const NotificationsScreen: React.FC<Props> = ({ onNavigate }) => {
                                 <h3 className="text-base font-medium text-midnight leading-tight">Receipt Available</h3>
                                 <span className="text-xs text-gray-400 font-medium whitespace-nowrap">09:45</span>
                             </div>
-                            <p className="text-[15px] text-gray-500 font-normal leading-normal">Your receipt for the ride to Canary Wharf is ready.</p>
+                            <p className="text-base text-gray-500 font-normal leading-normal">Your receipt for the ride to Canary Wharf is ready.</p>
                         </div>
                      </div>
                  </div>
@@ -82,7 +82,7 @@ const NotificationCard = ({ item }: { item: any }) => {
                         <h3 className="text-base font-bold text-midnight leading-tight">{item.title}</h3>
                         <span className="text-xs font-medium text-primary mt-0.5">{item.time}</span>
                     </div>
-                    <p className="text-[15px] text-gray-500 mt-1 leading-relaxed font-normal">{item.message}</p>
+                    <p className="text-base text-gray-500 mt-1 leading-relaxed font-normal">{item.message}</p>
                     {item.type === 'alert' && (
                         <div className="mt-3 flex gap-3">
                             <button className="px-4 py-2 rounded-lg border border-primary/20 bg-primary/5 text-primary text-xs font-bold uppercase tracking-wide">Track Ride</button>

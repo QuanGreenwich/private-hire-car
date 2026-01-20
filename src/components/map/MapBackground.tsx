@@ -1,5 +1,5 @@
 import React from 'react';
-import { MAP_IMAGE_URL } from '../constants';
+import { MAP_IMAGE_URL } from '@/constants';
 
 interface MapBackgroundProps {
   className?: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Home, Clock, Compass, Bell, User } from 'lucide-react';
-import { Screen } from '../types';
+import { Screen } from '@/types';
 
 interface BottomNavProps {
   currentScreen: Screen;

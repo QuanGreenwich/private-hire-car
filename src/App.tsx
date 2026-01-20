@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Screen } from './types';
-import { BottomNav } from './components';
+import { Screen } from '@/types';
+import { BottomNav } from '@/components';
 import {
   SplashScreen,
   AuthScreen,
@@ -15,10 +15,32 @@ import {
   NotificationsScreen,
   AccountScreen,
   ExploreScreen
-} from './screens';
+} from '@/screens';
+
+interface BookingData {
+  pickup: { name: string; coords: [number, number] };
+  destination: { name: string; coords: [number, number] };
+  vehicle: string;
+  vehicleModel?: string;
+  vehicleColor?: string;
+  fare: number;
+  distance: number;
+  duration: number;
+}
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.SPLASH);
+  const [currentBooking, setCurrentBooking] = useState<BookingData | null>(null);
+
+  const handleBookingComplete = (bookingData: BookingData) => {
+    setCurrentBooking(bookingData);
+    setCurrentScreen(Screen.ACTIVITY);
+  };
+
+  const handleCancelTrip = () => {
+    // Clear booking data and stay on Activity screen (which will show empty state)
+    setCurrentBooking(null);
+  };
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -31,17 +53,17 @@ const App: React.FC = () => {
       case Screen.HOME:
         return <HomeScreen onNavigate={setCurrentScreen} />;
       case Screen.BOOKING_LOCAL:
-        return <BookingLocalScreen onNavigate={setCurrentScreen} />;
+        return <BookingLocalScreen onNavigate={setCurrentScreen} onBookingComplete={handleBookingComplete} />;
       case Screen.BOOKING_HOTEL:
-        return <BookingHotelScreen onNavigate={setCurrentScreen} />;
+        return <BookingHotelScreen onNavigate={setCurrentScreen} onBookingComplete={handleBookingComplete} />;
       case Screen.BOOKING_CHAUFFEUR:
-        return <BookingChauffeurScreen onNavigate={setCurrentScreen} />;
+        return <BookingChauffeurScreen onNavigate={setCurrentScreen} onBookingComplete={handleBookingComplete} />;
       case Screen.BOOKING_AIRPORT:
-        return <BookingAirportScreen onNavigate={setCurrentScreen} />;
+        return <BookingAirportScreen onNavigate={setCurrentScreen} onBookingComplete={handleBookingComplete} />;
       case Screen.BOOKING_MAP:
         return <BookingMapScreen onNavigate={setCurrentScreen} />;
       case Screen.ACTIVITY:
-        return <ActivityScreen onNavigate={setCurrentScreen} />;
+        return <ActivityScreen key={currentBooking ? 'active' : 'none'} onNavigate={setCurrentScreen} bookingData={currentBooking} onCancelTrip={handleCancelTrip} />;
       case Screen.NOTIFICATIONS:
         return <NotificationsScreen onNavigate={setCurrentScreen} />;
       case Screen.ACCOUNT:
