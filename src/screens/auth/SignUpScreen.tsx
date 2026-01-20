@@ -1,5 +1,5 @@
 import React from 'react';
-import { Screen } from '../types';
+import { Screen } from '@/types';
 import { User, Mail, Smartphone, Lock, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface Props {

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "loc-001",
+    "name": "Heathrow Airport",
+    "address": "Longford TW6, UK",
+    "type": "airport",
+    "coordinates": {
+      "lat": 51.4700,
+      "lng": -0.4543
+    },
+    "popular": true,
+    "estimatedFare": "£65-85"
+  },
+  {
+    "id": "loc-002",
+    "name": "Buckingham Palace",
+    "address": "Westminster, London SW1A 1AA",
+    "type": "landmark",
+    "coordinates": {
+      "lat": 51.5014,
+      "lng": -0.1419
+    },
+    "popular": true,
+    "estimatedFare": "£25-35"
+  },
+  {
+    "id": "loc-003",
+    "name": "Tower of London",
+    "address": "St Katharine's & Wapping, London EC3N 4AB",
+    "type": "landmark",
+    "coordinates": {
+      "lat": 51.5081,
+      "lng": -0.0759
+    },
+    "popular": true,
+    "estimatedFare": "£20-30"
+  },
+  {
+    "id": "loc-004",
+    "name": "King's Cross Station",
+    "address": "Euston Rd, London N1 9AL",
+    "type": "transport_hub",
+    "coordinates": {
+      "lat": 51.5308,
+      "lng": -0.1238
+    },
+    "popular": true,
+    "estimatedFare": "£15-25"
+  },
+  {
+    "id": "loc-005",
+    "name": "The Shard",
+    "address": "32 London Bridge St, London SE1 9SG",
+    "type": "landmark",
+    "coordinates": {
+      "lat": 51.5045,
+      "lng": -0.0865
+    },
+    "popular": true,
+    "estimatedFare": "£18-28"
+  },
+  {
+    "id": "loc-006",
+    "name": "Canary Wharf",
+    "address": "Canary Wharf, London E14",
+    "type": "business_district",
+    "coordinates": {
+      "lat": 51.5054,
+      "lng": -0.0235
+    },
+    "popular": true,
+    "estimatedFare": "£22-32"
+  },
+  {
+    "id": "loc-007",
+    "name": "Gatwick Airport",
+    "address": "Horley RH6 0NP, UK",
+    "type": "airport",
+    "coordinates": {
+      "lat": 51.1537,
+      "lng": -0.1821
+    },
+    "popular": true,
+    "estimatedFare": "£75-95"
+  },
+  {
+    "id": "loc-008",
+    "name": "Oxford Street",
+    "address": "Oxford St, London W1",
+    "type": "shopping",
+    "coordinates": {
+      "lat": 51.5152,
+      "lng": -0.1426
+    },
+    "popular": true,
+    "estimatedFare": "£20-30"
+  },
+  {
+    "id": "loc-009",
+    "name": "London City Airport",
+    "address": "Hartmann Rd, London E16 2PX",
+    "type": "airport",
+    "coordinates": {
+      "lat": 51.5048,
+      "lng": 0.0495
+    },
+    "popular": false,
+    "estimatedFare": "£35-45"
+  },
+  {
+    "id": "loc-010",
+    "name": "Wembley Stadium",
+    "address": "Wembley, London HA9 0WS",
+    "type": "venue",
+    "coordinates": {
+      "lat": 51.5560,
+      "lng": -0.2795
+    },
+    "popular": false,
+    "estimatedFare": "£30-40"
+  }
+]

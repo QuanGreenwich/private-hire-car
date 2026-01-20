@@ -1,0 +1,90 @@
+[
+  {
+    "id": "booking-001",
+    "userId": "user-001",
+    "driverId": "driver-001",
+    "type": "airport",
+    "status": "completed",
+    "pickup": {
+      "address": "15 Baker Street, London W1U 3BW",
+      "coordinates": { "lat": 51.5226, "lng": -0.1586 },
+      "time": "2026-01-15T08:30:00Z"
+    },
+    "dropoff": {
+      "address": "Heathrow Airport, Terminal 5",
+      "coordinates": { "lat": 51.4700, "lng": -0.4543 },
+      "time": "2026-01-15T09:45:00Z"
+    },
+    "fare": 75.00,
+    "distance": "23.5 km",
+    "duration": "75 mins",
+    "paymentMethod": "card",
+    "notes": "Terminal 5, British Airways flight"
+  },
+  {
+    "id": "booking-002",
+    "userId": "user-002",
+    "driverId": "driver-002",
+    "type": "local",
+    "status": "in-progress",
+    "pickup": {
+      "address": "The Shard, London SE1 9SG",
+      "coordinates": { "lat": 51.5045, "lng": -0.0865 },
+      "time": "2026-01-19T14:00:00Z"
+    },
+    "dropoff": {
+      "address": "Canary Wharf, London E14",
+      "coordinates": { "lat": 51.5054, "lng": -0.0235 },
+      "time": "2026-01-19T14:25:00Z"
+    },
+    "fare": 28.00,
+    "distance": "6.2 km",
+    "duration": "25 mins",
+    "paymentMethod": "corporate",
+    "notes": "Business meeting"
+  },
+  {
+    "id": "booking-003",
+    "userId": "user-003",
+    "driverId": "driver-005",
+    "type": "chauffeur",
+    "status": "scheduled",
+    "pickup": {
+      "address": "Claridge's Hotel, Brook St, London W1K 4HR",
+      "coordinates": { "lat": 51.5126, "lng": -0.1481 },
+      "time": "2026-01-20T18:00:00Z"
+    },
+    "dropoff": {
+      "address": "Royal Opera House, Bow St, London WC2E 9DD",
+      "coordinates": { "lat": 51.5129, "lng": -0.1222 },
+      "time": "2026-01-20T18:30:00Z"
+    },
+    "fare": 120.00,
+    "distance": "3.8 km",
+    "duration": "30 mins",
+    "paymentMethod": "card",
+    "notes": "VIP service, wait and return after show (approx 3 hours)"
+  },
+  {
+    "id": "booking-004",
+    "userId": "user-001",
+    "driverId": "driver-004",
+    "type": "airport",
+    "status": "cancelled",
+    "pickup": {
+      "address": "King's Cross Station, London N1 9AL",
+      "coordinates": { "lat": 51.5308, "lng": -0.1238 },
+      "time": "2026-01-18T06:00:00Z"
+    },
+    "dropoff": {
+      "address": "Gatwick Airport, North Terminal",
+      "coordinates": { "lat": 51.1537, "lng": -0.1821 },
+      "time": "2026-01-18T07:30:00Z"
+    },
+    "fare": 85.00,
+    "distance": "45.2 km",
+    "duration": "90 mins",
+    "paymentMethod": "card",
+    "notes": "Flight cancelled"
+  }
+]

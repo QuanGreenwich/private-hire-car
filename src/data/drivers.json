@@ -1,0 +1,97 @@
+[
+  {
+    "id": "driver-001",
+    "name": "James Williams",
+    "rating": 4.9,
+    "totalTrips": 1247,
+    "yearsOfExperience": 8,
+    "vehicleType": "Mercedes S-Class",
+    "vehicleColor": "Black",
+    "licensePlate": "LDN 123A",
+    "phone": "+44 20 1234 5678",
+    "languages": ["English", "French"],
+    "specialties": ["Airport transfers", "Corporate events"],
+    "avatar": "https://i.pravatar.cc/150?img=12",
+    "currentLocation": {
+      "lat": 51.5074,
+      "lng": -0.1278
+    },
+    "available": true
+  },
+  {
+    "id": "driver-002",
+    "name": "Michael Chen",
+    "rating": 4.8,
+    "totalTrips": 892,
+    "yearsOfExperience": 5,
+    "vehicleType": "BMW 7 Series",
+    "vehicleColor": "Silver",
+    "licensePlate": "LDN 456B",
+    "phone": "+44 20 2345 6789",
+    "languages": ["English", "Mandarin"],
+    "specialties": ["City tours", "Business meetings"],
+    "avatar": "https://i.pravatar.cc/150?img=33",
+    "currentLocation": {
+      "lat": 51.5155,
+      "lng": -0.0922
+    },
+    "available": true
+  },
+  {
+    "id": "driver-003",
+    "name": "Sarah Thompson",
+    "rating": 5.0,
+    "totalTrips": 2103,
+    "yearsOfExperience": 12,
+    "vehicleType": "Audi A8",
+    "vehicleColor": "Black",
+    "licensePlate": "LDN 789C",
+    "phone": "+44 20 3456 7890",
+    "languages": ["English", "Spanish", "German"],
+    "specialties": ["VIP transport", "Special occasions"],
+    "avatar": "https://i.pravatar.cc/150?img=47",
+    "currentLocation": {
+      "lat": 51.5033,
+      "lng": -0.1195
+    },
+    "available": false
+  },
+  {
+    "id": "driver-004",
+    "name": "Rajesh Patel",
+    "rating": 4.7,
+    "totalTrips": 654,
+    "yearsOfExperience": 4,
+    "vehicleType": "Mercedes E-Class",
+    "vehicleColor": "White",
+    "licensePlate": "LDN 321D",
+    "phone": "+44 20 4567 8901",
+    "languages": ["English", "Hindi", "Gujarati"],
+    "specialties": ["Long distance", "Airport pickups"],
+    "avatar": "https://i.pravatar.cc/150?img=68",
+    "currentLocation": {
+      "lat": 51.5194,
+      "lng": -0.1270
+    },
+    "available": true
+  },
+  {
+    "id": "driver-005",
+    "name": "David O'Connor",
+    "rating": 4.9,
+    "totalTrips": 1567,
+    "yearsOfExperience": 10,
+    "vehicleType": "Range Rover Vogue",
+    "vehicleColor": "Black",
+    "licensePlate": "LDN 654E",
+    "phone": "+44 20 5678 9012",
+    "languages": ["English", "Irish"],
+    "specialties": ["Corporate travel", "Luxury tours"],
+    "avatar": "https://i.pravatar.cc/150?img=52",
+    "currentLocation": {
+      "lat": 51.5007,
+      "lng": -0.1246
+    },
+    "available": true
+  }
+]

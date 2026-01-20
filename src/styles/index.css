@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@import 'leaflet/dist/leaflet.css';
+
+@theme {
+  --color-midnight: #0f172a;
+  --color-gold: #d4af37;
+  --color-luxury-gold: #d4af37;
+  --color-luxury-silver: #c0c0c0;
+  --color-bg-light: #f8fafc;
+  --color-primary: #4338ca;
+  --color-primary-dark: #3730a3;
+  --color-primary-light: #6366f1;
+  
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Custom styles */
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}

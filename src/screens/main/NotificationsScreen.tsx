@@ -1,6 +1,6 @@
 import React from 'react';
-import { Screen } from '../types';
-import { NOTIFICATIONS } from '../constants';
+import { Screen } from '@/types';
+import { NOTIFICATIONS } from '@/constants';
 import { Car, CheckCircle2, PiggyBank, Receipt, Check } from 'lucide-react';
 
 interface Props {

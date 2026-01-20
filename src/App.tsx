@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { Screen } from './types';
-import BottomNav from './components/BottomNav';
-import SplashScreen from './screens/SplashScreen';
-import AuthScreen from './screens/AuthScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import HomeScreen from './screens/HomeScreen';
-import BookingLocalScreen from './screens/BookingLocalScreen';
-import BookingChauffeurScreen from './screens/BookingChauffeurScreen';
-import BookingAirportScreen from './screens/BookingAirportScreen';
-import ActivityScreen from './screens/ActivityScreen';
-import NotificationsScreen from './screens/NotificationsScreen';
-import AccountScreen from './screens/AccountScreen';
-import ExploreScreen from './screens/ExploreScreen';
+import { BottomNav } from './components';
+import {
+  SplashScreen,
+  AuthScreen,
+  SignUpScreen,
+  HomeScreen,
+  BookingLocalScreen,
+  BookingHotelScreen,
+  BookingChauffeurScreen,
+  BookingAirportScreen,
+  BookingMapScreen,
+  ActivityScreen,
+  NotificationsScreen,
+  AccountScreen,
+  ExploreScreen
+} from './screens';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.SPLASH);
@@ -28,10 +32,14 @@ const App: React.FC = () => {
         return <HomeScreen onNavigate={setCurrentScreen} />;
       case Screen.BOOKING_LOCAL:
         return <BookingLocalScreen onNavigate={setCurrentScreen} />;
+      case Screen.BOOKING_HOTEL:
+        return <BookingHotelScreen onNavigate={setCurrentScreen} />;
       case Screen.BOOKING_CHAUFFEUR:
         return <BookingChauffeurScreen onNavigate={setCurrentScreen} />;
       case Screen.BOOKING_AIRPORT:
         return <BookingAirportScreen onNavigate={setCurrentScreen} />;
+      case Screen.BOOKING_MAP:
+        return <BookingMapScreen onNavigate={setCurrentScreen} />;
       case Screen.ACTIVITY:
         return <ActivityScreen onNavigate={setCurrentScreen} />;
       case Screen.NOTIFICATIONS:
@@ -49,9 +57,11 @@ const App: React.FC = () => {
     Screen.SPLASH, 
     Screen.AUTH_SIGNIN, 
     Screen.AUTH_SIGNUP, 
-    Screen.BOOKING_LOCAL, 
+    Screen.BOOKING_LOCAL,
+    Screen.BOOKING_HOTEL, 
     Screen.BOOKING_CHAUFFEUR,
-    Screen.BOOKING_AIRPORT
+    Screen.BOOKING_AIRPORT,
+    Screen.BOOKING_MAP
   ].includes(currentScreen);
 
   return (

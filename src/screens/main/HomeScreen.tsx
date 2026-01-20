@@ -1,6 +1,6 @@
 import React from 'react';
-import { Screen } from '../types';
-import MapBackground from '../components/MapBackground';
+import { Screen } from '@/types';
+import MapBackground from '@/components/MapBackground';
 import { Menu, Locate, Search, Mic, Car, Plane, Hotel, Briefcase, ArrowRight, History } from 'lucide-react';
 
 interface Props {
@@ -55,7 +55,7 @@ const HomeScreen: React.FC<Props> = ({ onNavigate }) => {
             {[
                 { label: 'Local', icon: Car, action: () => onNavigate(Screen.BOOKING_LOCAL) },
                 { label: 'Airport', icon: Plane, action: () => onNavigate(Screen.BOOKING_AIRPORT) },
-                { label: 'Hotel', icon: Hotel, action: () => onNavigate(Screen.BOOKING_LOCAL) },
+                { label: 'Hotel', icon: Hotel, action: () => onNavigate(Screen.BOOKING_HOTEL) },
                 { label: 'Chauffeur', icon: Briefcase, action: () => onNavigate(Screen.BOOKING_CHAUFFEUR) },
             ].map((item, idx) => (
                 <button key={idx} onClick={item.action} className="group flex flex-col items-center gap-2 flex-1">

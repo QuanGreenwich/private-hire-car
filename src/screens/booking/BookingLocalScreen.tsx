@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Screen, Vehicle } from '../types';
-import MapBackground from '../components/MapBackground';
+import { Screen, Vehicle } from '@/types';
+import MapBackground from '@/components/MapBackground';
 import { ArrowLeft, MapPin, PlusCircle, PenLine, CreditCard, ChevronRight, User, Clock, CheckCircle2 } from 'lucide-react';
-import { VEHICLES } from '../constants';
+import { VEHICLES } from '@/constants';
 
 interface Props {
   onNavigate: (screen: Screen) => void;
@@ -10,38 +10,28 @@ interface Props {
 
 const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
   const [selectedVehicle, setSelectedVehicle] = useState<string>(VEHICLES[0].id);
+  const selectedVehicleData = VEHICLES.find(v => v.id === selectedVehicle) || VEHICLES[0];
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-bg-light pb-40">
-      {/* Map Header */}
-      <div className="relative w-full h-[45vh] bg-slate-200 overflow-hidden shadow-sm z-0">
-        <MapBackground className="w-full h-full opacity-90">
+    <div className="relative h-screen flex flex-col bg-bg-light overflow-hidden">
+      {/* Map Header - Fixed */}
+      <div className="relative w-full h-[28vh] bg-slate-900 rounded-b-[2.5rem] overflow-hidden shadow-xl z-0 shrink-0">
+        <MapBackground className="w-full h-full">
              <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-20">
-                <button onClick={() => onNavigate(Screen.HOME)} className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-md text-slate-700">
+                <button onClick={() => onNavigate(Screen.HOME)} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 transition-colors">
                     <ArrowLeft size={20} />
                 </button>
-                <div className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-full shadow-md">
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary">Local Journey</span>
-                </div>
+                <h1 className="text-white text-base font-semibold tracking-tight">Local Journey</h1>
                 <div className="w-10"></div>
-            </div>
-            
-            {/* Route Viz */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-full max-w-[80%] pointer-events-none">
-                <svg className="w-full h-32 drop-shadow-xl" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 80 C 100 80, 150 20, 280 20" stroke="#0f388a" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 4" />
-                    <circle cx="20" cy="80" r="6" fill="#0f388a" className="animate-pulse" />
-                    <circle cx="280" cy="20" r="6" fill="#0f388a" />
-                </svg>
-                <div className="absolute bottom-4 left-0 bg-white px-2 py-1 rounded shadow-lg text-[10px] font-bold text-primary">5 min</div>
             </div>
         </MapBackground>
       </div>
 
-      {/* Floating Panel */}
-      <div className="relative -mt-20 z-10 w-full max-w-md mx-auto flex flex-col gap-6 px-6">
+      {/* Scrollable Content */}
+      <div className="relative -mt-12 z-10 flex-1 overflow-y-auto px-6 pb-44">
+        <div className="w-full max-w-md mx-auto flex flex-col gap-3">
         {/* Input Card */}
-        <div className="bg-white rounded-2xl shadow-float p-5 relative">
+        <div className="bg-white rounded-2xl shadow-float p-4 relative">
              <div className="absolute left-[29px] top-[48px] bottom-[48px] w-0.5 bg-slate-200 z-0"></div>
              
              <div className="relative flex items-center gap-4 h-12 border-b border-slate-100 z-10">
@@ -65,13 +55,13 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
 
         {/* Vehicle Selection */}
         <div className="w-full">
-            <div className="flex items-center justify-between mb-3 px-1">
-                <h3 className="text-base font-bold text-slate-900">Choose Vehicle</h3>
+            <div className="flex items-center justify-between mb-2 px-1">
+                <h3 className="text-base font-semibold text-slate-900">Choose Vehicle</h3>
                 <span className="text-[10px] uppercase font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">15% Off</span>
             </div>
             
-            <div className="flex flex-col gap-2.5">
-                {VEHICLES.map((vehicle) => (
+            <div className="flex flex-col gap-2">
+                {VEHICLES.slice(0, 2).map((vehicle) => (
                     <label key={vehicle.id} className="relative cursor-pointer group w-full">
                         <input 
                             type="radio" 
@@ -80,13 +70,13 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
                             checked={selectedVehicle === vehicle.id}
                             onChange={() => setSelectedVehicle(vehicle.id)}
                         />
-                        <div className="flex items-center p-3 rounded-xl bg-white border border-slate-200 shadow-sm transition-all peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary peer-checked:bg-blue-50/50">
+                        <div className="flex items-center p-2.5 rounded-xl bg-white border border-slate-200 shadow-sm transition-all peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary peer-checked:bg-blue-50/50">
                             <div className="w-14 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                                 <img src={vehicle.image} alt={vehicle.name} className="w-10 h-auto object-contain" />
                             </div>
                             <div className="ml-3 flex-1">
                                 <div className="flex items-center gap-2">
-                                    <h4 className="text-sm font-bold text-slate-900">{vehicle.name}</h4>
+                                    <h4 className="text-sm font-semibold text-slate-900">{vehicle.name}</h4>
                                     <span className="flex items-center text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md gap-0.5">
                                         <User size={10} /> {vehicle.passengers}
                                     </span>
@@ -113,24 +103,27 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
             </div>
         </div>
 
-        <div className="bg-white/50 rounded-xl p-3 flex items-start gap-3 border border-slate-100">
-            <PenLine className="text-slate-400" size={20} />
+        <div className="bg-white/50 rounded-xl p-2.5 flex items-start gap-2 border border-slate-100">
+            <PenLine className="text-slate-400" size={18} />
             <div className="flex-1">
-                <p className="text-sm font-medium text-slate-700">Add note to driver</p>
-                <p className="text-xs text-slate-400">Gate code, luggage details, etc.</p>
+                <p className="text-xs font-medium text-slate-700">Add note to driver</p>
+                <p className="text-[10px] text-slate-400">Gate code, luggage, etc.</p>
             </div>
+        </div>
         </div>
       </div>
 
-      {/* Bottom Action */}
-      <div className="fixed bottom-20 left-0 w-full z-40 px-6">
-            <div className="max-w-md mx-auto flex flex-col gap-4">
-                <div className="flex items-center justify-between px-2 bg-white rounded-xl p-3 shadow-md">
+      {/* Bottom Action - Fixed */}
+      <div className="fixed bottom-0 left-0 w-full z-40 px-6 pb-6 bg-gradient-to-t from-bg-light via-bg-light to-transparent pt-4">
+            <div className="max-w-md mx-auto flex flex-col gap-3">
+                <div className="flex items-center justify-between px-3 bg-white rounded-xl p-2.5 shadow-md">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-5 bg-slate-800 rounded flex items-center justify-center">
                             <span className="text-[8px] font-bold text-white tracking-widest">VISA</span>
                         </div>
-                        <span className="text-sm font-semibold text-slate-900">Personal •••• 4242</span>
+                        <div className="flex-1">
+                            <span className="text-sm font-semibold text-slate-900">Personal •••• 4242</span>
+                        </div>
                     </div>
                     <button className="text-xs font-bold text-primary hover:text-primary-dark transition-colors">Change</button>
                 </div>
@@ -138,8 +131,8 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate }) => {
                     onClick={() => onNavigate(Screen.ACTIVITY)}
                     className="w-full h-14 bg-midnight text-white rounded-xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
                 >
-                    <span className="text-lg font-bold font-display">Book Standard</span>
-                    <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-mono font-medium">£12.75</span>
+                    <span className="text-lg font-bold font-display">Book {selectedVehicleData.name}</span>
+                    <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-mono font-medium">£{selectedVehicleData.price.toFixed(2)}</span>
                     <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>

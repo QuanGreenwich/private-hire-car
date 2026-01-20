@@ -1,5 +1,5 @@
 import React from 'react';
-import { Screen } from '../types';
+import { Screen } from '@/types';
 import { Settings, Edit2, Verified, ChevronRight, User, CreditCard, History, Car, Shield, Headset, Gavel, LogOut } from 'lucide-react';
 
 interface Props {
