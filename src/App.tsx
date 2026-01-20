@@ -63,7 +63,7 @@ const App: React.FC = () => {
       case Screen.BOOKING_MAP:
         return <BookingMapScreen onNavigate={setCurrentScreen} />;
       case Screen.ACTIVITY:
-        return <ActivityScreen key={currentBooking ? 'active' : 'none'} onNavigate={setCurrentScreen} bookingData={currentBooking} onCancelTrip={handleCancelTrip} />;
+        return <ActivityScreen onNavigate={setCurrentScreen} bookingData={currentBooking} onCancelTrip={handleCancelTrip} />;
       case Screen.NOTIFICATIONS:
         return <NotificationsScreen onNavigate={setCurrentScreen} />;
       case Screen.ACCOUNT:

@@ -37,6 +37,14 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
   const [view, setView] = useState<'ongoing' | 'history'>('ongoing');
   const [showChat, setShowChat] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  
+  // Reset state when bookingData changes (e.g. new trip or cancellation)
+  useEffect(() => {
+    if (!bookingData) {
+      setShowChat(false);
+      setShowCancelModal(false);
+    }
+  }, [bookingData]);
   const [chatMessage, setChatMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: '1', sender: 'driver', message: 'Hi! I\'m on my way to pick you up.', time: '14:25' },
@@ -196,7 +204,7 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                 <MarkerPopup>
                   <div className="text-sm">
                     <strong>Nguyễn Quân</strong><br />
-                    Mercedes E-Class<br />
+                    {bookingData?.vehicleModel || 'Mercedes E-Class'}<br />
                     <span className="text-green-600 font-semibold">Arriving in 5 mins</span>
                   </div>
                 </MarkerPopup>
@@ -289,7 +297,7 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Chauffeur</span>
                             <h2 className="text-lg font-bold text-midnight truncate">Nguyễn Quân</h2>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="text-xs font-semibold text-primary">{bookingData?.vehicleModel || 'Mercedes E-Class'}</span>
+                                <span className="text-xs font-semibold text-primary">{bookingData?.vehicleModel || bookingData?.vehicle || 'Mercedes E-Class'}</span>
                                 <span className="h-1 w-1 rounded-full bg-slate-300"></span>
                                 <span className="text-[10px] text-slate-400 font-bold uppercase">{bookingData?.vehicleColor || 'Deep Blue'}</span>
                             </div>
@@ -449,10 +457,12 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
+                                    // Close modal first
+                                    setShowCancelModal(false);
+                                    // Then cancel trip (updates parent state)
                                     if (onCancelTrip) {
                                         onCancelTrip();
                                     }
-                                    setShowCancelModal(false);
                                 }}
                                 className="w-full h-12 bg-red-500 text-white rounded-xl font-bold shadow-lg shadow-red-500/30 active:scale-95 transition-all"
                             >
