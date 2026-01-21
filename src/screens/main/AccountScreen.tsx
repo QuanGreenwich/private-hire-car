@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Screen } from '@/types';
 import { Settings, Edit2, Verified, ChevronRight, User, CreditCard, History, Car, Shield, Headset, Gavel, LogOut } from 'lucide-react';
 
@@ -7,6 +7,27 @@ interface Props {
 }
 
 const AccountScreen: React.FC<Props> = ({ onNavigate }) => {
+  const [userName, setUserName] = useState('User Name');
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    // Get user info from localStorage
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      try {
+        const userData = JSON.parse(currentUser);
+        if (userData.name) {
+          setUserName(userData.name);
+        }
+        if (userData.email) {
+          setUserEmail(userData.email);
+        }
+      } catch (error) {
+        console.error('Failed to parse user data:', error);
+      }
+    }
+  }, []);
+
   return (
     <div className="relative h-screen bg-bg-light flex flex-col">
         <header className="flex-none z-30 flex items-center justify-between px-6 pt-12 pb-4 bg-bg-light/80 backdrop-blur-md">
@@ -23,14 +44,17 @@ const AccountScreen: React.FC<Props> = ({ onNavigate }) => {
             <div className="relative group mb-4">
                 <div className="absolute -inset-[3px] rounded-full border border-gold/40 animate-pulse"></div>
                 <div className="relative h-28 w-28 rounded-full border-4 border-white shadow-lg bg-slate-200 flex items-center justify-center">
-                    <span className="text-slate-400 text-4xl font-bold">U</span>
+                    <span className="text-slate-400 text-4xl font-bold">{userName.charAt(0).toUpperCase()}</span>
                 </div>
                 <div className="absolute bottom-1 right-1 bg-primary text-white rounded-full p-2 shadow-md border-2 border-white cursor-pointer hover:bg-primary-dark transition-colors">
                     <Edit2 size={14} />
                 </div>
             </div>
             <div className="flex flex-col items-center gap-2">
-                <h2 className="text-xl font-bold text-midnight">User Name</h2>
+                <h2 className="text-xl font-bold text-midnight">{userName}</h2>
+                {userEmail && (
+                  <p className="text-sm text-gray-500 font-medium">{userEmail}</p>
+                )}
                 <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-sm border border-gray-100 ring-1 ring-gold/10">
                     <Verified size={16} className="text-gold fill-gold/20" />
                     <span className="text-primary text-sm font-semibold tracking-wide">Gold Member</span>

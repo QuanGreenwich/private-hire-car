@@ -1,12 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Screen } from '@/types';
-import { Mail, Lock, EyeOff, ArrowRight, Diamond } from 'lucide-react';
+import { Mail, Lock, EyeOff, Eye, ArrowRight, Diamond, AlertCircle } from 'lucide-react';
 
 interface Props {
   onNavigate: (screen: Screen) => void;
+  onLogin?: (userData: { email: string; name: string }) => void;
 }
 
-const AuthScreen: React.FC<Props> = ({ onNavigate }) => {
+const AuthScreen: React.FC<Props> = ({ onNavigate, onLogin }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const validateForm = () => {
+    const newErrors: { email?: string; password?: string } = {};
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    
+    // Password validation
+    if (!password) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    // Check stored user
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      if (userData.email === email && userData.password === password) {
+        // Login successful
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', JSON.stringify({ email: userData.email, name: userData.name }));
+        
+        if (onLogin) {
+          onLogin({ email: userData.email, name: userData.name });
+        }
+        
+        // Simulate email notification
+        console.log(`✅ Login confirmation email sent to ${email}`);
+        
+        onNavigate(Screen.HOME);
+      } else {
+        setErrors({ email: 'Invalid email or password' });
+      }
+    } else {
+      setErrors({ email: 'No account found. Please sign up first.' });
+    }
+  };
+
   return (
     <div className="relative min-h-screen w-full bg-bg-light flex flex-col">
        <div className="absolute inset-0 z-0">
@@ -34,16 +92,27 @@ const AuthScreen: React.FC<Props> = ({ onNavigate }) => {
                 <p className="text-slate-300 text-base">Sign in to continue your premium experience</p>
             </div>
 
-            <form className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4">
                 <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Mail className="text-slate-400 w-5 h-5" />
                     </div>
                     <input 
-                        type="email" 
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (errors.email) setErrors({ ...errors, email: undefined });
+                        }}
                         placeholder="Email Address" 
-                        className="block w-full pl-12 pr-4 py-4 bg-white/95 backdrop-blur-md border-none rounded-xl text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-primary"
+                        className={`block w-full pl-12 pr-4 py-4 bg-white/95 backdrop-blur-md border-none rounded-xl text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 ${errors.email ? 'ring-2 ring-red-500' : 'focus:ring-primary'}`}
                     />
+                    {errors.email && (
+                      <div className="flex items-center gap-1 mt-1 text-red-200 text-sm">
+                        <AlertCircle size={14} />
+                        <span>{errors.email}</span>
+                      </div>
+                    )}
                 </div>
                 
                 <div className="relative group">
@@ -51,13 +120,24 @@ const AuthScreen: React.FC<Props> = ({ onNavigate }) => {
                         <Lock className="text-slate-400 w-5 h-5" />
                     </div>
                     <input 
-                        type="password" 
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          if (errors.password) setErrors({ ...errors, password: undefined });
+                        }}
                         placeholder="Password" 
-                        className="block w-full pl-12 pr-12 py-4 bg-white/95 backdrop-blur-md border-none rounded-xl text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-primary"
+                        className={`block w-full pl-12 pr-12 py-4 bg-white/95 backdrop-blur-md border-none rounded-xl text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 ${errors.password ? 'ring-2 ring-red-500' : 'focus:ring-primary'}`}
                     />
-                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
-                        <EyeOff className="text-slate-400 w-5 h-5" />
+                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+                        {showPassword ? <Eye className="text-slate-400 w-5 h-5" /> : <EyeOff className="text-slate-400 w-5 h-5" />}
                     </div>
+                    {errors.password && (
+                      <div className="flex items-center gap-1 mt-1 text-red-200 text-sm">
+                        <AlertCircle size={14} />
+                        <span>{errors.password}</span>
+                      </div>
+                    )}
                 </div>
 
                 <div className="flex justify-end">
@@ -65,8 +145,7 @@ const AuthScreen: React.FC<Props> = ({ onNavigate }) => {
                 </div>
 
                 <button 
-                    type="button"
-                    onClick={() => onNavigate(Screen.HOME)}
+                    type="submit"
                     className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform active:scale-[0.98] flex items-center justify-center gap-2 mt-4"
                 >
                     <span>Sign In</span>

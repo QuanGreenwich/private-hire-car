@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Screen, Vehicle } from '@/types';
-import { Map, MapMarker, MarkerContent, MapRoute } from '@/components';
+import { Map, MapMarker, MarkerContent, MapRoute, PaymentModal } from '@/components';
 import { ArrowLeft, MapPin, PlusCircle, CreditCard, ChevronRight, User, Clock, CheckCircle2, Navigation2 } from 'lucide-react';
 import { VEHICLES } from '@/constants';
 import { calculateRoute, formatDistance, formatDuration, formatPrice, RouteResult } from '@/utils/routing';
@@ -92,24 +92,43 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
   const [isCalculating, setIsCalculating] = useState(false);
   const [showPickupDropdown, setShowPickupDropdown] = useState(false);
   const [showDestDropdown, setShowDestDropdown] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingBookingData, setPendingBookingData] = useState<any>(null);
 
   const selectedVehicleData = VEHICLES.find(v => v.id === selectedVehicle) || VEHICLES[0];
 
   const handleBookTrip = () => {
-    if (destination && routeData && onBookingComplete) {
-      const assignedVehicle = getRandomVehicle(selectedVehicle);
-      onBookingComplete({
-        pickup: { name: pickup.name, coords: pickup.coords },
-        destination: { name: destination.name, coords: destination.coords },
-        vehicle: selectedVehicleData.name,
-        vehicleModel: assignedVehicle.model,
-        vehicleColor: assignedVehicle.color,
-        fare: routeData.price * (selectedVehicle === '1' ? 1 : selectedVehicle === '2' ? 1.4 : 1.8),
-        distance: routeData.distance,
-        duration: routeData.duration
-      });
-    } else {
-      onNavigate(Screen.ACTIVITY);
+    if (!destination) {
+      alert('Please select a destination');
+      return;
+    }
+    if (!routeData) {
+      alert('Please wait for route calculation');
+      return;
+    }
+    
+    const assignedVehicle = getRandomVehicle(selectedVehicle);
+    const bookingData = {
+      pickup: { name: pickup.name, coords: pickup.coords },
+      destination: { name: destination.name, coords: destination.coords },
+      vehicle: selectedVehicleData.name,
+      vehicleModel: assignedVehicle.model,
+      vehicleColor: assignedVehicle.color,
+      fare: routeData.price * (selectedVehicle === '1' ? 1 : selectedVehicle === '2' ? 1.4 : 1.8),
+      distance: routeData.distance,
+      duration: routeData.duration,
+      bookingType: 'local'
+    };
+    
+    // Show payment modal instead of booking directly
+    setPendingBookingData(bookingData);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentConfirm = (paymentMethod: 'card' | 'cash') => {
+    setShowPaymentModal(false);
+    if (onBookingComplete && pendingBookingData) {
+      onBookingComplete({ ...pendingBookingData, paymentMethod });
     }
   };
 
@@ -129,6 +148,8 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
           setRouteData(route);
         } catch (error) {
           console.error('Route calculation failed:', error);
+          alert('Failed to calculate route. Please try again or select different locations.');
+          setRouteData(null);
         } finally {
           setIsCalculating(false);
         }
@@ -369,34 +390,28 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
       {/* Bottom Action - Fixed */}
       <div className="fixed bottom-0 left-0 w-full z-40 px-5 pb-5 bg-gradient-to-t from-bg-light via-bg-light to-transparent pt-3">
             <div className="max-w-md mx-auto flex flex-col gap-2.5">
-                <div className="flex items-center justify-between px-3 bg-white rounded-lg p-2 shadow-md">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-5 bg-slate-800 rounded flex items-center justify-center">
-                            <span className="text-[8px] font-bold text-white tracking-widest">VISA</span>
-                        </div>
-                        <div className="flex-1">
-                            <span className="text-xs font-semibold text-slate-900">Personal •••• 4242</span>
-                        </div>
-                    </div>
-                    <button className="text-xs font-bold text-primary hover:text-primary-dark transition-colors">Change</button>
-                </div>
                 <button 
                     onClick={handleBookTrip}
                     disabled={!destination || isCalculating}
-                    className="w-full h-12 bg-midnight text-white rounded-lg shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-between px-5 group disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-12 bg-midnight text-white rounded-lg shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <span className="text-base font-bold">
                       {!destination ? 'Select Destination' : isCalculating ? 'Calculating...' : `Book ${selectedVehicleData.name}`}
                     </span>
-                    <div className="flex items-center gap-1.5">
-                        <span className="text-base font-bold">
-                          {routeData ? formatPrice(routeData.price * (selectedVehicle === 'standard' ? 1 : selectedVehicle === 'executive' ? 1.4 : 1.8)) : '£--'}
-                        </span>
-                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
       </div>
+      
+      {/* Payment Modal */}
+      {showPaymentModal && pendingBookingData && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          onConfirm={handlePaymentConfirm}
+          bookingData={pendingBookingData}
+        />
+      )}
     </div>
   );
 };

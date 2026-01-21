@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Screen } from '@/types';
-import { MapBackground } from '@/components';
+import { Map, MapMarker, MarkerContent, PaymentModal } from '@/components';
 import { ArrowLeft, MoreHorizontal, Navigation, Edit2, Car, Luggage, User, Check, Verified, ChevronRight, Info, PenLine, MapPin } from 'lucide-react';
 import { VEHICLES } from '@/constants';
 
@@ -57,7 +57,7 @@ const VEHICLE_FLEET = {
     { model: 'Lexus LS', colors: ['Sonic Quartz', 'Caviar', 'Atomic Silver', 'Nightfall Mica'] }
   ],
   'mpv': [ // Luxury MPVs
-    { model: 'Mercedes V-Class', colors: ['Diamond White', 'Obsidian Black', 'Brilliant Silver', 'Cavansite Blue'] },
+    { model: 'Mercedes GLS-Class', colors: ['Diamond White', 'Obsidian Black', 'Brilliant Silver', 'Cavansite Blue'] },
     { model: 'BMW X7', colors: ['Alpine White', 'Carbon Black', 'Mineral White', 'Phytonic Blue'] },
     { model: 'Audi Q7', colors: ['Glacier White', 'Mythos Black', 'Navarra Blue', 'Samurai Gray'] },
     { model: 'Range Rover Sport', colors: ['Fuji White', 'Santorini Black', 'Silicon Silver', 'Byron Blue'] },
@@ -103,84 +103,110 @@ const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate, onBookingComplete
   
   const basePrice = getBasePrice();
   const finalPrice = Math.round(basePrice * 0.85);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingBookingData, setPendingBookingData] = useState<any>(null);
   
   const handleBooking = () => {
-    if (onBookingComplete) {
-      const assignedVehicle = getRandomVehicle(selectedVehicle);
-      const vehicleData = selectedVehicle === 'sedan' ? VEHICLES[1] : VEHICLES[2]; // Executive or Luxury
-      
-      onBookingComplete({
-        pickup: { name: selectedLocation.name, coords: selectedLocation.coords },
-        destination: { name: 'Chauffeur Service', coords: selectedLocation.coords },
-        vehicle: vehicleData.name,
-        vehicleModel: assignedVehicle.model,
-        vehicleColor: assignedVehicle.color,
-        fare: finalPrice,
-        distance: 0, // Chauffeur service doesn't have fixed route
-        duration: rentalType === 'hourly' ? parseInt(duration) * 60 : parseInt(duration) * 24 * 60
-      });
-    } else {
-      onNavigate(Screen.ACTIVITY);
+    const assignedVehicle = getRandomVehicle(selectedVehicle);
+    const vehicleData = selectedVehicle === 'sedan' ? VEHICLES[1] : VEHICLES[2]; // Executive or Luxury
+    
+    const bookingData = {
+      pickup: { name: selectedLocation.name, coords: selectedLocation.coords },
+      destination: { name: 'Chauffeur Service', coords: selectedLocation.coords },
+      vehicle: vehicleData.name,
+      vehicleModel: assignedVehicle.model,
+      vehicleColor: assignedVehicle.color,
+      fare: finalPrice,
+      distance: 0, // Chauffeur service doesn't have fixed route
+      duration: rentalType === 'hourly' ? parseInt(duration) * 60 : parseInt(duration) * 24 * 60,
+      bookingType: 'chauffeur'
+    };
+    
+    setPendingBookingData(bookingData);
+    setShowPaymentModal(true);
+  };
+  
+  const handlePaymentConfirm = (paymentMethod: 'card' | 'cash') => {
+    setShowPaymentModal(false);
+    if (onBookingComplete && pendingBookingData) {
+      onBookingComplete({ ...pendingBookingData, paymentMethod });
     }
   };
 
   return (
     <div className="relative h-screen flex flex-col bg-bg-light overflow-hidden">
-        {/* Header Section - Fixed */}
-        <div className="relative w-full h-[20vh] rounded-b-3xl overflow-hidden shadow-xl z-0 bg-slate-900 shrink-0">
-             <MapBackground className="w-full h-full">
-                 <div className="absolute top-4 left-0 w-full px-5 flex items-center justify-between z-40">
-                    <button onClick={() => onNavigate(Screen.HOME)} className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:bg-white/20 transition-colors">
-                        <ArrowLeft size={20} />
-                    </button>
-                    <h1 className="text-white text-xl font-semibold tracking-tight">Chauffeur Hire</h1>
-                    <button className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:bg-white/20 transition-colors">
-                        <MoreHorizontal size={20} />
-                    </button>
-                 </div>
-                 
-                 <div className="absolute bottom-4 left-5 right-5 z-30">
-                    <div className="relative bg-white/95 backdrop-blur-lg rounded-xl p-3 flex items-center gap-3 shadow-lg border-l-4 border-gold">
-                        <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center shrink-0 text-gold">
-                            <Navigation size={18} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-xs uppercase tracking-wider font-semibold text-gold mb-0.5">Pickup Location</p>
-                            <h2 className="text-base font-bold text-slate-900 truncate">{selectedLocation.name}</h2>
-                        </div>
-                        <button 
-                            onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                            className="text-xs font-bold text-primary px-2 py-0.5 bg-slate-100 rounded-md"
-                        >
-                            Edit
-                        </button>
-                        
-                        {/* Location Dropdown */}
-                        {showLocationDropdown && (
-                          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 max-h-60 overflow-y-auto z-[70]">
-                            {LONDON_LOCATIONS.map((location) => (
-                              <button
-                                key={location.id}
-                                onClick={() => {
-                                  setSelectedLocation(location);
-                                  setShowLocationDropdown(false);
-                                }}
-                                className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center gap-2"
-                              >
-                                <MapPin size={14} className="text-gold shrink-0" />
-                                <p className="text-sm font-semibold text-slate-900">{location.name}</p>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                    </div>
-                 </div>
-             </MapBackground>
+        {/* Header Section with Map - Fixed */}
+        <div className="relative w-full h-[25vh] rounded-b-3xl overflow-hidden shadow-xl z-0 bg-slate-900 shrink-0">
+             <Map center={[selectedLocation.coords[0], selectedLocation.coords[1]]} zoom={15}>
+               {/* Pickup Location Marker */}
+               <MapMarker longitude={selectedLocation.coords[0]} latitude={selectedLocation.coords[1]}>
+                 <MarkerContent>
+                   <div className="relative">
+                     <div className="w-10 h-10 rounded-full bg-green-500 border-4 border-white shadow-xl flex items-center justify-center animate-pulse">
+                       <MapPin size={20} className="text-white" />
+                     </div>
+                   </div>
+                 </MarkerContent>
+               </MapMarker>
+             </Map>
+             
+             <div className="absolute top-4 left-0 w-full px-5 flex items-center justify-between z-40">
+                <button onClick={() => onNavigate(Screen.HOME)} className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:bg-white/20 transition-colors">
+                    <ArrowLeft size={20} />
+                </button>
+                <h1 className="text-white text-xl font-semibold tracking-tight drop-shadow-lg">Chauffeur Hire</h1>
+                <button className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:bg-white/20 transition-colors">
+                    <MoreHorizontal size={20} />
+                </button>
+             </div>
         </div>
 
 
         <div className="flex-1 overflow-y-auto px-5 mt-2 relative z-10 pb-32">
           <div className="w-full max-w-md mx-auto space-y-3.5">
+            {/* Pickup Location Section */}
+            <section className="bg-white rounded-xl shadow-sm p-3.5 relative">
+              <h3 className="text-base font-semibold text-slate-900 mb-2.5">Pickup Location</h3>
+              <div className="relative">
+                <div className="relative flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="w-4 h-4 rounded-full border-[3px] border-green-500 bg-white z-10 shrink-0"></div>
+                  <div className="flex-1">
+                    <button 
+                      onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                      className="w-full text-left p-0 bg-transparent border-none text-base font-semibold text-slate-900"
+                    >
+                      {selectedLocation.name}
+                    </button>
+                  </div>
+                  <button 
+                    onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                    className="text-slate-400 hover:text-primary"
+                  >
+                    <MapPin size={20} />
+                  </button>
+                </div>
+                
+                {/* Location Dropdown */}
+                {showLocationDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 max-h-64 overflow-y-auto z-50">
+                    {LONDON_LOCATIONS.map((location) => (
+                      <button
+                        key={location.id}
+                        onClick={() => {
+                          setSelectedLocation(location);
+                          setShowLocationDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center gap-3 transition-colors ${location.id === selectedLocation.id ? 'bg-gold/5' : ''}`}
+                      >
+                        <MapPin size={16} className={location.id === selectedLocation.id ? 'text-gold' : 'text-slate-400'} />
+                        <p className={`text-sm font-semibold ${location.id === selectedLocation.id ? 'text-gold' : 'text-slate-900'}`}>{location.name}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+
             {/* Duration Section */}
             <section>
                 <div className="flex items-center justify-between mb-2.5">
@@ -250,7 +276,7 @@ const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate, onBookingComplete
                             </div>
                         </div>
                         <p className="text-xs text-slate-500">Mercedes S-Class • BMW 7 • Audi A8</p>
-                        <p className="text-sm font-bold text-gold mt-1">£{selectedVehicle === 'sedan' ? basePrice : (rentalType === 'hourly' ? 60 * parseInt(duration) : 320 * parseInt(duration))}</p>
+                        <p className="text-sm font-bold text-gold mt-1">£{rentalType === 'hourly' ? 60 * parseInt(duration) : 320 * parseInt(duration)}</p>
                     </button>
                     <button 
                         onClick={() => setSelectedVehicle('mpv')}
@@ -262,8 +288,8 @@ const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate, onBookingComplete
                                 {selectedVehicle === 'mpv' && <Check size={10} className="text-white" />}
                             </div>
                         </div>
-                        <p className="text-xs text-slate-500">Mercedes V-Class • BMW X7 • Audi Q7</p>
-                        <p className="text-sm font-bold text-gold mt-1">£{selectedVehicle === 'mpv' ? basePrice : (rentalType === 'hourly' ? 78 * parseInt(duration) : 415 * parseInt(duration))}</p>
+                        <p className="text-xs text-slate-500">Mercedes GLS-Class • BMW X7 • Audi Q7</p>
+                        <p className="text-sm font-bold text-gold mt-1">£{rentalType === 'hourly' ? 78 * parseInt(duration) : 415 * parseInt(duration)}</p>
                     </button>
                 </div>
             </section>
@@ -328,29 +354,25 @@ const BookingChauffeurScreen: React.FC<Props> = ({ onNavigate, onBookingComplete
       {/* Bottom Action - Fixed */}
       <div className="fixed bottom-0 left-0 w-full z-40 px-5 pb-5 bg-gradient-to-t from-bg-light via-bg-light to-transparent pt-3">
             <div className="max-w-md mx-auto flex flex-col gap-2.5">
-                <div className="flex items-center justify-between px-3 bg-white rounded-lg p-2 shadow-md">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-5 bg-slate-800 rounded flex items-center justify-center">
-                            <span className="text-[9px] font-bold text-white tracking-widest">VISA</span>
-                        </div>
-                        <div className="flex-1">
-                            <span className="text-xs font-semibold text-slate-900">Personal •••• 4242</span>
-                        </div>
-                    </div>
-                    <button className="text-xs font-bold text-primary hover:text-primary-dark transition-colors">Change</button>
-                </div>
                 <button 
                     onClick={handleBooking}
-                    className="w-full h-12 bg-midnight text-white rounded-lg shadow-lg shadow-midnight/20 active:scale-[0.98] transition-all flex items-center justify-between px-5 group"
+                    className="w-full h-12 bg-midnight text-white rounded-lg shadow-lg shadow-midnight/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
                 >
                     <span className="text-base font-bold">Confirm Booking</span>
-                    <div className="flex items-center gap-1.5">
-                        <span className="text-base font-bold">£{finalPrice}.00</span>
-                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
       </div>
+      
+      {/* Payment Modal */}
+      {showPaymentModal && pendingBookingData && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          onConfirm={handlePaymentConfirm}
+          bookingData={pendingBookingData}
+        />
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Screen } from '@/types';
 import { ArrowLeft, MoreVertical, PlaneLanding, Badge, ArrowRight, Verified, PenLine, Check } from 'lucide-react';
 import { VEHICLES } from '@/constants';
+import { PaymentModal } from '@/components';
 
 // Realistic vehicle fleet for each category
 const VEHICLE_FLEET = {
@@ -56,6 +57,12 @@ const BookingAirportScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }
   const [meetGreet, setMeetGreet] = useState(true);
   const [selectedVehicle, setSelectedVehicle] = useState<string>(VEHICLES[0].id);
   const [airport, setAirport] = useState('London Heathrow (LHR)');
+  const [flightNumber, setFlightNumber] = useState('');
+  const [terminal, setTerminal] = useState('T 5');
+  const [pickupDate, setPickupDate] = useState('2023-11-24');
+  const [pickupTime, setPickupTime] = useState('14:30');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingBookingData, setPendingBookingData] = useState<any>(null);
   
   const selectedVehicleData = VEHICLES.find(v => v.id === selectedVehicle) || VEHICLES[0];
   // Fixed airport transfer booking fee based on vehicle type
@@ -76,23 +83,42 @@ const BookingAirportScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }
   };
 
   const handleBookTrip = () => {
+    if (!flightNumber.trim()) {
+      alert('Please enter flight number');
+      return;
+    }
+    
     const selectedAirport = airportLocations[airport];
     const pickupLocation = { coords: [-0.1276, 51.5074] as [number, number], name: 'Central London' }; // Default pickup
     const assignedVehicle = getRandomVehicle(selectedVehicle);
 
-    if (onBookingComplete && selectedAirport) {
-      onBookingComplete({
+    if (selectedAirport) {
+      const bookingData = {
         pickup: pickupLocation,
         destination: { name: selectedAirport.name, coords: selectedAirport.coords },
         vehicle: selectedVehicleData.name,
         vehicleModel: assignedVehicle.model,
         vehicleColor: assignedVehicle.color,
         fare: totalPrice,
-        distance: 25000, // ~25km average to airports
-        duration: 2400 // ~40 mins average
-      });
-    } else {
-      onNavigate(Screen.ACTIVITY);
+        distance: 25, // ~25km average to airports
+        duration: 40, // ~40 mins average
+        flightNumber,
+        terminal,
+        pickupDate,
+        pickupTime,
+        meetGreet,
+        bookingType: 'airport'
+      };
+      
+      setPendingBookingData(bookingData);
+      setShowPaymentModal(true);
+    }
+  };
+  
+  const handlePaymentConfirm = (paymentMethod: 'card' | 'cash') => {
+    setShowPaymentModal(false);
+    if (onBookingComplete && pendingBookingData) {
+      onBookingComplete({ ...pendingBookingData, paymentMethod });
     }
   };
   
@@ -130,11 +156,21 @@ const BookingAirportScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }
                 <div className="grid grid-cols-3 gap-2.5">
                     <div className="col-span-2 relative">
                         <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Flight No.</label>
-                        <input className="w-full bg-slate-50 border border-slate-200 text-primary text-base font-semibold rounded-lg py-2 px-3 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="BA 1492" type="text" />
+                        <input 
+                          value={flightNumber}
+                          onChange={(e) => setFlightNumber(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 text-primary text-base font-semibold rounded-lg py-2 px-3 focus:ring-2 focus:ring-primary/20 outline-none" 
+                          placeholder="BA 1492" 
+                          type="text" 
+                        />
                     </div>
                     <div className="col-span-1 relative">
                         <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Terminal</label>
-                        <select className="w-full bg-slate-50 border border-slate-200 text-primary text-sm font-semibold rounded-lg py-2 pl-2 pr-6 focus:ring-2 focus:ring-primary/20 outline-none">
+                        <select 
+                          value={terminal}
+                          onChange={(e) => setTerminal(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 text-primary text-sm font-semibold rounded-lg py-2 pl-2 pr-6 focus:ring-2 focus:ring-primary/20 outline-none"
+                        >
                             <option>T 5</option>
                             <option>T 4</option>
                             <option>T 3</option>
@@ -145,11 +181,21 @@ const BookingAirportScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }
                 <div className="grid grid-cols-2 gap-2.5">
                     <div>
                         <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Date</label>
-                        <input className="w-full bg-slate-50 border border-slate-200 text-primary text-sm font-semibold rounded-lg py-2 px-2.5 focus:ring-2 focus:ring-primary/20 outline-none" type="date" defaultValue="2023-11-24" />
+                        <input 
+                          value={pickupDate}
+                          onChange={(e) => setPickupDate(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 text-primary text-sm font-semibold rounded-lg py-2 px-2.5 focus:ring-2 focus:ring-primary/20 outline-none" 
+                          type="date" 
+                        />
                     </div>
                     <div>
                         <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Time</label>
-                        <input className="w-full bg-slate-50 border border-slate-200 text-primary text-sm font-semibold rounded-lg py-2 px-2.5 focus:ring-2 focus:ring-primary/20 outline-none" type="time" defaultValue="14:30" />
+                        <input 
+                          value={pickupTime}
+                          onChange={(e) => setPickupTime(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 text-primary text-sm font-semibold rounded-lg py-2 px-2.5 focus:ring-2 focus:ring-primary/20 outline-none" 
+                          type="time" 
+                        />
                     </div>
                 </div>
              </div>
@@ -181,27 +227,25 @@ const BookingAirportScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }
 
         <div className="fixed bottom-0 left-0 w-full z-40 px-5 pb-5 bg-gradient-to-t from-bg-light via-bg-light to-transparent pt-3">
             <div className="max-w-md mx-auto flex flex-col gap-2.5">
-                <div className="flex items-center justify-between px-3 bg-white rounded-lg p-2 shadow-md">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-5 bg-slate-800 rounded flex items-center justify-center">
-                            <span className="text-[8px] font-bold text-white tracking-widest">VISA</span>
-                        </div>
-                        <div className="flex-1">
-                            <span className="text-xs font-semibold text-slate-900">Personal •••• 4242</span>
-                        </div>
-                    </div>
-                    <button className="text-[10px] font-bold text-primary hover:text-primary-dark transition-colors">Change</button>
-                </div>
                 <button 
                     onClick={handleBookTrip}
                     className="w-full h-14 bg-midnight text-white rounded-lg shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
                 >
                     <span className="text-base font-bold">Book Transfer</span>
-                    <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-mono font-medium">£{totalPrice.toFixed(2)}</span>
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
         </div>
+        
+        {/* Payment Modal */}
+        {showPaymentModal && pendingBookingData && (
+          <PaymentModal
+            isOpen={showPaymentModal}
+            onClose={() => setShowPaymentModal(false)}
+            onConfirm={handlePaymentConfirm}
+            bookingData={pendingBookingData}
+          />
+        )}
     </div>
   );
 };

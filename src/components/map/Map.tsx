@@ -1,7 +1,21 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
+import React, { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import driversData from '@/data/drivers.json';
+
+// Component to update map center
+const MapController: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.flyTo(center, zoom, {
+      duration: 1.5, // Animation duration in seconds
+      easeLinearity: 0.25
+    });
+  }, [center, zoom, map]);
+  
+  return null;
+};
 
 // Custom marker icons using CDN
 const DriverIcon = new Icon({
@@ -64,6 +78,7 @@ const Map: React.FC<MapProps> = ({
         doubleClickZoom={true}
         zoomControl={true}
       >
+        <MapController center={center} zoom={zoom} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

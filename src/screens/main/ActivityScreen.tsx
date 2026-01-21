@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Screen } from '@/types';
-import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls, MapRoute } from '@/components';
+import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls, MapRoute, RatingModal, ReceiptModal } from '@/components';
 import { HISTORY } from '@/constants';
-import { Locate, Share2, Star, MessageCircle, MapPin, Send, X, Navigation, Phone, XCircle, AlertTriangle, Car } from 'lucide-react';
+import { Locate, Share2, Star, MessageCircle, MapPin, Send, X, Navigation, Phone, XCircle, AlertTriangle, Car, CheckCircle } from 'lucide-react';
 import { calculateRoute, formatDistance, formatDuration, formatPrice, RouteResult } from '@/utils/routing';
+import driversData from '@/data/drivers.json';
 
 interface Props {
   onNavigate: (screen: Screen) => void;
@@ -36,21 +37,107 @@ interface TripLocation {
 const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip }) => {
   const [view, setView] = useState<'ongoing' | 'history'>('ongoing');
   const [showChat, setShowChat] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [tripRating, setTripRating] = useState<number | undefined>(undefined);
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash'>('card');
+  const [tripHistory, setTripHistory] = useState<any[]>([]);
+  
+  // Random driver assignment
+  const [assignedDriver] = useState(() => {
+    const availableDrivers = driversData.filter(d => d.available);
+    return availableDrivers[Math.floor(Math.random() * availableDrivers.length)];
+  });
+  
+  // Load trip history from localStorage
+  useEffect(() => {
+    const loadHistory = () => {
+      const history = localStorage.getItem('tripHistory');
+      if (history) {
+        try {
+          setTripHistory(JSON.parse(history));
+        } catch (error) {
+          console.error('Failed to load trip history:', error);
+        }
+      }
+    };
+    loadHistory();
+  }, [view]); // Reload when switching to history view
   
   // Reset state when bookingData changes (e.g. new trip or cancellation)
   useEffect(() => {
     if (!bookingData) {
       setShowChat(false);
-      setShowCancelModal(false);
     }
   }, [bookingData]);
   const [chatMessage, setChatMessage] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: '1', sender: 'driver', message: 'Hi! I\'m on my way to pick you up.', time: '14:25' },
-    { id: '2', sender: 'driver', message: 'I\'ll be there in 5 minutes.', time: '14:26' },
-    { id: '3', sender: 'customer', message: 'Great! I\'ll wait at the main entrance.', time: '14:27' },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    // Generate initial messages with real timestamps
+    const now = new Date();
+    const getTimeOffset = (minutesAgo: number) => {
+      const time = new Date(now.getTime() - minutesAgo * 60000);
+      return time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    };
+    
+    return [
+      { id: '1', sender: 'driver', message: 'Hi! I\'m on my way to pick you up.', time: getTimeOffset(5) },
+      { id: '2', sender: 'driver', message: 'I\'ll be there in 5 minutes.', time: getTimeOffset(3) },
+      { id: '3', sender: 'customer', message: 'Great! I\'ll wait at the main entrance.', time: getTimeOffset(2) },
+    ];
+  });
+
+  const handleCompleteTrip = () => {
+    // Show rating modal first
+    setShowRatingModal(true);
+  };
+
+  const handleRatingSubmit = (rating: number, feedback: string) => {
+    setTripRating(rating);
+    setShowRatingModal(false);
+    
+    // Save completed trip to history
+    if (bookingData) {
+      const completedTrip = {
+        id: Date.now().toString(),
+        type: (bookingData as any).bookingType || 'local',
+        pickup: bookingData.pickup.name,
+        destination: bookingData.destination.name,
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+        price: bookingData.fare,
+        status: 'completed',
+        vehicle: bookingData.vehicle,
+        driver: assignedDriver?.name || 'Driver',
+        rating: rating,
+        distance: bookingData.distance,
+        duration: bookingData.duration
+      };
+      
+      // Get existing history
+      const existingHistory = localStorage.getItem('tripHistory');
+      const history = existingHistory ? JSON.parse(existingHistory) : [];
+      
+      // Add new trip to beginning of array
+      history.unshift(completedTrip);
+      
+      // Save back to localStorage
+      localStorage.setItem('tripHistory', JSON.stringify(history));
+      
+      console.log('✅ Trip saved to history:', completedTrip);
+    }
+    
+    // Show receipt modal after rating
+    setShowReceiptModal(true);
+  };
+
+  const handleReceiptClose = () => {
+    setShowReceiptModal(false);
+    // After closing receipt, go back to home
+    if (onCancelTrip) {
+      onCancelTrip();
+    }
+    onNavigate(Screen.HOME);
+  };
 
   // Trip details - use bookingData if available, otherwise use defaults
   const [pickup] = useState<TripLocation>(
@@ -88,6 +175,8 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
         setRouteData(route);
       } catch (error) {
         console.error('Failed to calculate route:', error);
+        // Don't show alert in Activity screen, just log error
+        setRouteData(null);
       } finally {
         setIsLoadingRoute(false);
       }
@@ -155,7 +244,7 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
       {/* Active Trip Content */}
       {bookingData && view === 'ongoing' && (
         <div className="fixed inset-0 z-0 h-screen w-full">
-            <Map center={[-0.3, 51.5]} zoom={10}>
+            <Map center={[pickup.longitude, pickup.latitude]} zoom={11}>
               {/* Render route if available */}
               {routeData && routeData.coordinates.length > 0 && (
                 <MapRoute 
@@ -203,8 +292,8 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                 </MarkerContent>
                 <MarkerPopup>
                   <div className="text-sm">
-                    <strong>Nguyễn Quân</strong><br />
-                    {bookingData?.vehicleModel || 'Mercedes E-Class'}<br />
+                    <strong>{assignedDriver.name}</strong><br />
+                    {bookingData?.vehicleModel || assignedDriver.vehicleType}<br />
                     <span className="text-green-600 font-semibold">Arriving in 5 mins</span>
                   </div>
                 </MarkerPopup>
@@ -260,10 +349,21 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                                 <div>
                                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pickup</span>
                                     <p className="text-sm font-semibold text-slate-900 leading-tight">{pickup.name}</p>
+                                    {bookingData?.pickupDate && bookingData?.pickupTime && (
+                                      <p className="text-xs text-slate-600 mt-1">
+                                        {new Date(bookingData.pickupDate).toLocaleDateString()} at {bookingData.pickupTime}
+                                      </p>
+                                    )}
                                 </div>
                                 <div>
                                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Destination</span>
                                     <p className="text-sm font-semibold text-slate-900 leading-tight">{destination.name}</p>
+                                    {bookingData?.flightNumber && (
+                                      <p className="text-xs text-slate-600 mt-1">
+                                        Flight {bookingData.flightNumber} • Terminal {bookingData.terminal}
+                                        {bookingData.meetGreet && <span className="ml-2 text-green-600 font-semibold">+ Meet & Greet</span>}
+                                      </p>
+                                    )}
                                 </div>
                             </div>
                             {routeData && (
@@ -285,26 +385,26 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                     <div className="flex items-center gap-5">
                         <div className="relative shrink-0">
                             <div className="h-16 w-16 rounded-full p-0.5 bg-gradient-to-tr from-midnight via-gold to-midnight">
-                                <div className="h-full w-full rounded-full border-2 border-white bg-slate-200 flex items-center justify-center">
-                                    <span className="text-slate-400 text-2xl font-bold">NQ</span>
+                                <div className="h-full w-full rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden">
+                                    <img src={assignedDriver.avatar} alt={assignedDriver.name} className="w-full h-full object-cover" />
                                 </div>
                             </div>
                             <div className="absolute -bottom-1 -right-1 bg-midnight text-gold text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5 border border-white/10">
-                                <Star size={10} fill="currentColor" /> 4.9
+                                <Star size={10} fill="currentColor" /> {assignedDriver.rating}
                             </div>
                         </div>
                         <div className="flex-1 min-w-0">
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Chauffeur</span>
-                            <h2 className="text-lg font-bold text-midnight truncate">Nguyễn Quân</h2>
+                            <h2 className="text-lg font-bold text-midnight truncate">{assignedDriver.name}</h2>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="text-xs font-semibold text-primary">{bookingData?.vehicleModel || bookingData?.vehicle || 'Mercedes E-Class'}</span>
+                                <span className="text-xs font-semibold text-primary">{bookingData?.vehicleModel || assignedDriver.vehicleType}</span>
                                 <span className="h-1 w-1 rounded-full bg-slate-300"></span>
-                                <span className="text-[10px] text-slate-400 font-bold uppercase">{bookingData?.vehicleColor || 'Deep Blue'}</span>
+                                <span className="text-[10px] text-slate-400 font-bold uppercase">{bookingData?.vehicleColor || assignedDriver.vehicleColor}</span>
                             </div>
                         </div>
                         <div className="shrink-0 flex gap-2">
                             <a 
-                                href="tel:+447700900123"
+                                href={`tel:${assignedDriver.phone}`}
                                 className="h-12 w-12 flex items-center justify-center rounded-full bg-green-600 text-white shadow-lg active:scale-95 transition-all"
                             >
                                 <Phone size={20} />
@@ -323,11 +423,22 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                         </div>
                     </div>
                     
-                    {/* Action Button */}
-                    <div className="mt-4">
+                    {/* Action Buttons */}
+                    <div className="mt-4 flex gap-3">
                         <button
-                            onClick={() => setShowCancelModal(true)}
-                            className="w-full h-12 bg-red-50 text-red-600 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 font-semibold border border-red-200 hover:bg-red-100"
+                            onClick={handleCompleteTrip}
+                            className="flex-1 h-12 bg-green-600 text-white rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 font-semibold hover:bg-green-700"
+                        >
+                            <CheckCircle size={18} />
+                            Complete Trip
+                        </button>
+                        <button
+                            onClick={() => {
+                                if (onCancelTrip) {
+                                    onCancelTrip();
+                                }
+                            }}
+                            className="flex-1 h-12 bg-red-50 text-red-600 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 font-semibold border border-red-200 hover:bg-red-100"
                         >
                             <XCircle size={18} />
                             Cancel Trip
@@ -415,83 +526,27 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                     </div>
                 </div>
             )}
-            
-            {/* Cancel Trip Modal */}
-            {showCancelModal && (
-                <div 
-                    className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" 
-                    onClick={() => setShowCancelModal(false)}
-                >
-                    <div 
-                        className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 transform transition-all" 
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Warning Icon */}
-                        <div className="flex justify-center mb-4">
-                            <div className="h-20 w-20 rounded-full bg-red-50 flex items-center justify-center">
-                                <AlertTriangle size={40} className="text-red-500" />
-                            </div>
-                        </div>
-                        
-                        {/* Title & Message */}
-                        <h3 className="text-2xl font-bold text-midnight text-center mb-2">Cancel Trip?</h3>
-                        <p className="text-base text-slate-600 text-center mb-6 leading-relaxed">
-                            Are you sure you want to cancel this trip? Your driver is already on the way to pick you up.
-                        </p>
-                        
-                        {/* Cancellation Fee Notice */}
-                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
-                            <div className="flex items-start gap-3">
-                                <AlertTriangle size={20} className="text-amber-600 shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="text-sm font-semibold text-amber-900 mb-1">Cancellation Fee</p>
-                                    <p className="text-xs text-amber-700 leading-relaxed">
-                                        A £5.00 cancellation fee will be charged to your payment method.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {/* Action Buttons */}
-                        <div className="flex flex-col gap-3">
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    // Close modal first
-                                    setShowCancelModal(false);
-                                    // Then cancel trip (updates parent state)
-                                    if (onCancelTrip) {
-                                        onCancelTrip();
-                                    }
-                                }}
-                                className="w-full h-12 bg-red-500 text-white rounded-xl font-bold shadow-lg shadow-red-500/30 active:scale-95 transition-all"
-                            >
-                                Yes, Cancel Trip
-                            </button>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowCancelModal(false);
-                                }}
-                                className="w-full h-12 bg-slate-100 text-midnight rounded-xl font-semibold active:scale-95 transition-all"
-                            >
-                                Keep Trip
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
       )}
 
       {/* History View */}
       {view === 'history' && (
-        <div className="relative z-10 px-4 pt-4 flex flex-col gap-4">
+        <div className="relative z-10 px-4 pt-4 pb-24 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-160px)]">
              <div className="flex items-center justify-between px-2">
                 <h3 className="text-lg font-bold text-midnight">Recent History</h3>
                 <button className="text-xs font-black uppercase tracking-widest text-gold hover:text-yellow-600">View All</button>
              </div>
-             {HISTORY.map((item) => (
+             
+             {tripHistory.length === 0 ? (
+               <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 text-center">
+                 <div className="w-16 h-16 rounded-full bg-slate-100 mx-auto mb-4 flex items-center justify-center">
+                   <Car size={32} className="text-slate-400" />
+                 </div>
+                 <h3 className="text-lg font-bold text-midnight mb-2">No Trip History</h3>
+                 <p className="text-sm text-slate-500">Complete your first trip to see your history here</p>
+               </div>
+             ) : (
+               tripHistory.map((item) => (
                 <div key={item.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col gap-4">
                     <div className="flex justify-between items-start">
                         <div className="flex flex-col">
@@ -499,6 +554,13 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                                 <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">{item.type}</span>
                                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{item.date}, {item.time}</span>
                             </div>
+                            {item.rating && (
+                              <div className="flex items-center gap-1 mt-1">
+                                {Array.from({ length: item.rating }).map((_, i) => (
+                                  <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
+                                ))}
+                              </div>
+                            )}
                         </div>
                         <div className="text-right">
                             <span className="block text-lg font-bold text-midnight">£{item.price.toFixed(2)}</span>
@@ -517,9 +579,38 @@ const ActivityScreen: React.FC<Props> = ({ onNavigate, bookingData, onCancelTrip
                             <p className="text-base font-bold text-midnight truncate">{item.destination}</p>
                         </div>
                     </div>
+                    {item.driver && (
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                        <span className="text-xs text-slate-500">Driver:</span>
+                        <span className="text-xs font-semibold text-midnight">{item.driver}</span>
+                      </div>
+                    )}
                 </div>
-             ))}
+               ))
+             )}
         </div>
+      )}
+      
+      {/* Rating Modal */}
+      {showRatingModal && bookingData && (
+        <RatingModal
+          isOpen={showRatingModal}
+          onClose={() => setShowRatingModal(false)}
+          onSubmit={handleRatingSubmit}
+          driverName={assignedDriver?.name || 'Your Driver'}
+        />
+      )}
+      
+      {/* Receipt Modal */}
+      {showReceiptModal && bookingData && (
+        <ReceiptModal
+          isOpen={showReceiptModal}
+          onClose={handleReceiptClose}
+          bookingData={bookingData}
+          driverName={assignedDriver?.name || 'Your Driver'}
+          paymentMethod={paymentMethod}
+          rating={tripRating}
+        />
       )}
     </div>
   );

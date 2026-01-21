@@ -141,8 +141,18 @@ const BookingHotelScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
   };
 
   const handleBookTrip = () => {
-    if (pickup && destination && routeData && onBookingComplete) {
+    if (!pickup || !destination) {
+      alert('Please select both pickup and destination');
+      return;
+    }
+    if (!routeData) {
+      alert('Please wait for route calculation');
+      return;
+    }
+    if (onBookingComplete) {
       const assignedVehicle = getRandomVehicle(selectedVehicle);
+      const selectedVehicleData = VEHICLES.find(v => v.id === selectedVehicle) || VEHICLES[0];
+      
       onBookingComplete({
         pickup: { name: pickup.name, coords: pickup.coords },
         destination: { name: destination.name, coords: destination.coords },
@@ -151,10 +161,9 @@ const BookingHotelScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
         vehicleColor: assignedVehicle.color,
         fare: routeData.price * (selectedVehicle === '1' ? 1 : selectedVehicle === '2' ? 1.4 : 1.8),
         distance: routeData.distance,
-        duration: routeData.duration
+        duration: routeData.duration,
+        bookingType: 'hotel'
       });
-    } else {
-      onNavigate(Screen.ACTIVITY);
     }
   };
 
@@ -172,6 +181,8 @@ const BookingHotelScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
           setRouteData(route);
         } catch (error) {
           console.error('Route calculation failed:', error);
+          alert('Failed to calculate route. Please try again or select different locations.');
+          setRouteData(null);
         } finally {
           setIsCalculating(false);
         }
@@ -421,12 +432,13 @@ const BookingHotelScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
 
           {/* Confirm Button */}
           <button
-            onClick={() => onNavigate(Screen.ACTIVITY)}
-            className="w-full h-14 bg-primary hover:bg-primary-dark text-white rounded-lg font-bold text-base shadow-xl flex items-center justify-between px-5 transition-all active:scale-[0.98]"
+            onClick={handleBookTrip}
+            disabled={!pickup || !destination || !routeData}
+            className="w-full h-14 bg-primary hover:bg-primary-dark text-white rounded-lg font-bold text-base shadow-xl flex items-center justify-between px-5 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>Confirm Pickup</span>
             <div className="flex items-center gap-2">
-              <span className="text-base">£{selectedVehicleData.price.toFixed(2)}</span>
+              <span className="text-base">£{routeData ? (routeData.price * (selectedVehicle === '1' ? 1 : selectedVehicle === '2' ? 1.4 : 1.8)).toFixed(2) : selectedVehicleData.price.toFixed(2)}</span>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>

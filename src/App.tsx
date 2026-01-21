@@ -26,11 +26,23 @@ interface BookingData {
   fare: number;
   distance: number;
   duration: number;
+  // Airport booking specific fields
+  flightNumber?: string;
+  terminal?: string;
+  pickupDate?: string;
+  pickupTime?: string;
+  meetGreet?: boolean;
+  bookingType?: 'local' | 'airport' | 'hotel' | 'chauffeur';
 }
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.SPLASH);
   const [currentBooking, setCurrentBooking] = useState<BookingData | null>(null);
+  const [bookingHistory, setBookingHistory] = useState<BookingData[]>(() => {
+    // Load history from localStorage on mount
+    const saved = localStorage.getItem('bookingHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const handleBookingComplete = (bookingData: BookingData) => {
     setCurrentBooking(bookingData);
@@ -38,6 +50,12 @@ const App: React.FC = () => {
   };
 
   const handleCancelTrip = () => {
+    // Save to history before clearing
+    if (currentBooking) {
+      const updatedHistory = [...bookingHistory, { ...currentBooking, status: 'cancelled' as any }];
+      setBookingHistory(updatedHistory);
+      localStorage.setItem('bookingHistory', JSON.stringify(updatedHistory));
+    }
     // Clear booking data and stay on Activity screen (which will show empty state)
     setCurrentBooking(null);
   };

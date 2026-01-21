@@ -47,6 +47,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const containerRef = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const prevPropsRef = useRef<{ center?: [number, number]; zoom?: number }>({});
 
   useImperativeHandle(ref, () => mapInstance as maplibregl.Map, [mapInstance]);
 
@@ -56,8 +57,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-      center: [-0.1278, 51.5074], // London [lng, lat]
-      zoom: 12,
+      center: props.center || [-0.1278, 51.5074], // Use props center or default to London [lng, lat]
+      zoom: props.zoom || 12,
       attributionControl: {
         compact: true,
       },
@@ -66,6 +67,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
     map.on("load", () => setIsLoaded(true));
     setMapInstance(map);
+    
+    // Store initial props to prevent flyTo on first render
+    prevPropsRef.current = { center: props.center, zoom: props.zoom };
 
     return () => {
       map.remove();
@@ -73,6 +77,29 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       setMapInstance(null);
     };
   }, []);
+
+  // Update center and zoom when props change (but not on initial mount)
+  useEffect(() => {
+    if (!mapInstance || !isLoaded) return;
+    
+    // Check if center or zoom actually changed from previous values
+    const centerChanged = props.center && prevPropsRef.current.center &&
+      (props.center[0] !== prevPropsRef.current.center[0] || 
+       props.center[1] !== prevPropsRef.current.center[1]);
+    const zoomChanged = props.zoom !== undefined && props.zoom !== prevPropsRef.current.zoom;
+    
+    if (centerChanged || zoomChanged) {
+      mapInstance.flyTo({
+        center: props.center || mapInstance.getCenter().toArray() as [number, number],
+        zoom: props.zoom !== undefined ? props.zoom : mapInstance.getZoom(),
+        duration: 1500,
+        essential: true
+      });
+      
+      // Update ref to track current values
+      prevPropsRef.current = { center: props.center, zoom: props.zoom };
+    }
+  }, [props.center, props.zoom, mapInstance, isLoaded]);
 
   const contextValue = useMemo(
     () => ({
