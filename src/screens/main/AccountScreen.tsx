@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Screen } from '@/types';
-import { Settings, Edit2, Verified, ChevronRight, User, CreditCard, History, Car, Shield, Headset, Gavel, LogOut } from 'lucide-react';
+import { Settings, Edit2, Verified, ChevronRight, User, CreditCard, History, Car, Shield, Headset, Gavel } from 'lucide-react';
 
 interface Props {
   onNavigate: (screen: Screen) => void;
@@ -91,15 +91,7 @@ const AccountScreen: React.FC<Props> = ({ onNavigate }) => {
                 ))}
              </div>
 
-             <button 
-                onClick={() => onNavigate(Screen.AUTH_SIGNIN)}
-                className="mt-6 w-full group flex items-center justify-center gap-2 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm hover:bg-red-50 active:bg-red-100 transition-colors"
-            >
-                <LogOut size={20} className="text-red-500" />
-                <span className="text-sm font-semibold text-red-500">Log Out</span>
-             </button>
-
-             <div className="mt-4 mb-2 flex justify-center items-center gap-1 opacity-40">
+             <div className="mt-6 mb-2 flex justify-center items-center gap-1 opacity-40">
                 <div className="h-1 w-1 rounded-full bg-primary"></div>
                 <div className="h-1 w-1 rounded-full bg-primary"></div>
                 <div className="h-1 w-1 rounded-full bg-primary"></div>

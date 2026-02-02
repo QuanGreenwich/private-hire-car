@@ -1,7 +1,3 @@
-// Auth screens
-export { default as AuthScreen } from './auth/AuthScreen';
-export { default as SignUpScreen } from './auth/SignUpScreen';
-
 // Booking screens
 export { default as BookingAirportScreen } from './booking/BookingAirportScreen';
 export { default as BookingChauffeurScreen } from './booking/BookingChauffeurScreen';

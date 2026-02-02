@@ -125,10 +125,17 @@ const BookingLocalScreen: React.FC<Props> = ({ onNavigate, onBookingComplete }) 
     setShowPaymentModal(true);
   };
 
-  const handlePaymentConfirm = (paymentMethod: 'card' | 'cash') => {
+  const handlePaymentConfirm = async (paymentMethod: 'card' | 'cash') => {
     setShowPaymentModal(false);
-    if (onBookingComplete && pendingBookingData) {
-      onBookingComplete({ ...pendingBookingData, paymentMethod });
+    
+    if (pendingBookingData) {
+      // Navigate to activity screen with booking data
+      if (onBookingComplete) {
+        onBookingComplete({ 
+          ...pendingBookingData, 
+          paymentMethod
+        });
+      }
     }
   };
 

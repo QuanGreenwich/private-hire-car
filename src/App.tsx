@@ -3,8 +3,6 @@ import { Screen } from '@/types';
 import { BottomNav } from '@/components';
 import {
   SplashScreen,
-  AuthScreen,
-  SignUpScreen,
   HomeScreen,
   BookingLocalScreen,
   BookingHotelScreen,
@@ -64,10 +62,6 @@ const App: React.FC = () => {
     switch (currentScreen) {
       case Screen.SPLASH:
         return <SplashScreen onNavigate={setCurrentScreen} />;
-      case Screen.AUTH_SIGNIN:
-        return <AuthScreen onNavigate={setCurrentScreen} />;
-      case Screen.AUTH_SIGNUP:
-        return <SignUpScreen onNavigate={setCurrentScreen} />;
       case Screen.HOME:
         return <HomeScreen onNavigate={setCurrentScreen} />;
       case Screen.BOOKING_LOCAL:
@@ -95,8 +89,6 @@ const App: React.FC = () => {
 
   const showNav = ![
     Screen.SPLASH, 
-    Screen.AUTH_SIGNIN, 
-    Screen.AUTH_SIGNUP, 
     Screen.BOOKING_LOCAL,
     Screen.BOOKING_HOTEL, 
     Screen.BOOKING_CHAUFFEUR,

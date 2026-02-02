@@ -31,7 +31,7 @@ const SplashScreen: React.FC<Props> = ({ onNavigate }) => {
         </div>
         
         <button 
-          onClick={() => onNavigate(Screen.AUTH_SIGNIN)}
+          onClick={() => onNavigate(Screen.HOME)}
           className="w-full bg-primary hover:bg-primary-dark text-white text-lg font-bold py-4 rounded-2xl shadow-glow transition-all active:scale-95 border border-white/10 backdrop-blur-sm"
         >
           Explore
